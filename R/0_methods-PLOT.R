@@ -103,6 +103,7 @@ setMethod(f = "plot",
                     lines(filters[[fNo]][,i], col=rainbow(flen)[fNo])
                   }
                 }
+                graphics::box()
                 
                 # PLOT2: LEGEND prices
                 par(mar=c(0,0,0,0))
@@ -134,7 +135,7 @@ setMethod(f = "plot",
                       plot.xts(na.locf(ind), col=rainbow(ilen)[indNo], type="l", main="", axes=F, auto.grid=F)
                     }  
                   } 
-                  box() # draw box line
+                  graphics::box() # draw box line
                   
                   # PLOT4: LEGEND indicators
                   par(mar=c(0,0,0,0))
@@ -154,6 +155,7 @@ setMethod(f = "plot",
                 axis(4, at=pretty(range(performance[,i])), las=2) # right axis
                 # PERFORMANCE
                 lines(performance[,i], col="darkgray")
+                graphics::box()
                 
                 # PLOT6: LEGEND performance
                 par(mar=c(margins[1],0,0,0))
