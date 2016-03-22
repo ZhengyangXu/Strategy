@@ -573,7 +573,7 @@ setMethod(f = "hitratio",
             
             prices <- getPrices(object, from=from, until=until, which=which)
             signals <- getSignals(object, which=which, use.backtest=use.backtest)[paste0(from,"::",until)]
-            logReturns <- .PricesToLogReturns(prices)[index(signals),]
+            logReturns <- .PricesToLogReturns(prices)[index(prices) %in% index(signals),]
             signals <- signals[index(logReturns)]
             
             
@@ -585,7 +585,7 @@ setMethod(f = "hitratio",
               hitratioFUN <- function(price, signal, trade){
                 price <- price[index(trade[trade==T])]
                 ret <- .PricesToLogReturns(price)
-                hits <- as.numeric(sign(ret)) == as.numeric(sign(signal[index(ret)]))
+                hits <- as.numeric(sign(ret)) == as.numeric(sign(signal[index(signal) %in% index(ret)]))
                 hitratio <- sum(hits)/length(hits)
                 return(hitratio)
               }
@@ -598,7 +598,8 @@ setMethod(f = "hitratio",
             } 
             
             if (of=="portfolio") {
-              weights <- apply(getWeights(object, from=from, until=until, which=which)[index(signals)], 2, mean)
+              weights <- getWeights(object, from=from, until=until, which=which)
+              weights <- apply(weights[index(weights) %in% index(signals)], 2, mean)
               hitratios <- as.vector(hitratios %*% (weights/sum(weights)))
               names(hitratios) <- "Portfolio"
             }
