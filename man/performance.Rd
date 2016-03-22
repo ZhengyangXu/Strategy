@@ -27,7 +27,7 @@ performance(object, of="portfolio", type="performance"
 \item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
 }
 \description{
-Gets performance of an object of class \code{Strategy}.
+Gets the performance of an object of class \code{Strategy}.
 }
 \examples{
 ## Not run:

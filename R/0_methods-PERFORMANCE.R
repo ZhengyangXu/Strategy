@@ -13,7 +13,7 @@ setGeneric(name = "performance",
 #' @name performance
 #' @aliases performance
 #' @title Get Strategy Performance
-#' @description Gets performance of an object of class \code{Strategy}.
+#' @description Gets the performance of an object of class \code{Strategy}.
 #' @usage performance(object, of="portfolio", type="performance"
 #'      , which=NULL, from=NULL, until=NULL,
 #'      , use.backtest=F)
