@@ -2,16 +2,31 @@
 # name: name of new function
 # file.path: path to store template to
 # overwrite: overwrite existing file?
+#' @export
+#' @aliases newStrategyFunction
+#' @title Create Own Strategy
+#' @description Creates a strategy functin template file. This file can be used as template for the development of customized strategies.
+#' @usage newStrategyFunction(name=NULL, file.path=getwd(), overwrite=F)
+#' @examples
+#' ##Not run:
+#'
+#' # Creates a file myNewStrat.R at the specific file path
+#' newStrategyFunction(name="myNewStrat", file.path=getwd(), overwrite=T)
+#'
+#' ##End(Not run)
+#'
 newStrategyFunction <- function(name=NULL, file.path=getwd(), overwrite=F) {
   if (is.null(name)) stop("Please define function name!")
   if (!file.exists(file.path)) stop("Please define valid directory to store function in!")
-  file.from <- "4_Templates/newStrategy.R"
-  if (!file.exists(file.from)) stop("Please set the Working Directory to the path where the Strategy.R file and subfolders are stored!")
   file.to <- paste0(file.path, "/", name, ".R")
-  if (file.exists(file.to))
-    if (overwrite==T) file.copy(from=file.from, to=file.to, overwrite=overwrite)
-    else stop("File already exists and default ist not to overwrite files!")
-  else file.copy(from=file.from, to=file.to)
+  if (file.exists(file.to)) {
+    if (overwrite==T) file.copy(from=system.file("newStrategy.R", "Strategy"), to=file.to, overwrite=overwrite)
+    else stop("File already exists and default is not to overwrite files!")
+    } else {
+      file.from <- file.path(path.package("Strategy"), "newStrategy.R")
+      if (!file.exists(file.from)) stop("Source file does not exist. Please update package and/or contact administrator!")
+      file.copy(from=file.from, to=file.to)
+      }
   cat(paste0("File copied to ", file.to), "\n")
 }
 
@@ -41,25 +56,44 @@ getEnv <- function(x) {
   envirs[x.envir]
 }
 
-# Validate which values for asset selection
+# Validate which values for column-based or list-based data selection
+# used within methods to validate selected assets, filters and indicators
 validWhich <- function(which, data) {
-  if (is.null(data) || !is.xts(data))
-    stop("Please provide data as xts!")
-  if (is.null(which)) {
-    which.out <- 1:ncol(data)
-  } else if (is.numeric(which)) {
-    which.out <- which[which %in% 1:ncol(data)]
-  } else if (is.character(which)) {
-    which.out <- colnames(data)[tolower(colnames(data)) %in% tolower(which)]
-  } else {
-    stop("Please provide which-argument as either numeric or character vector to select data")
+  if (is.null(data) || (!is.xts(data) && !is.list(data)))
+    stop("Please provide data as list or xts!")
+  
+  which.out <- NULL
+  
+  # select valid which arguments to which.out for either list or xts
+  if (is.list(data)) {
+    if (length(data) == 0) return(NULL)
+    if (is.numeric(which)) {
+      which.out <- which[which %in% 1:length(data)]
+    } else if (is.null(which)) {
+      which.out <- 1:length(data)
+    } else if (is.character(which)) {
+      which.out <- names(data)[tolower(names(data)) %in% tolower(which)]
+    }
+  } else if (is.xts(data)) {
+    if (is.null(ncol(data))) return(NULL)
+    if (is.numeric(which)) {
+      which.out <- which[which %in% 1:ncol(data)]
+    } else if (is.null(which)) {
+      which.out <- 1:ncol(data)
+    } else if (is.character(which)) {
+      which.out <- colnames(data)[tolower(colnames(data)) %in% tolower(which)]
+    }   
   }
+  
+  # verification
   if (length(which.out) == 0)
     stop("Which values all invalid!")
   # warn for cutted which values or stop if none available
   if (!is.null(which) && length(which) != length(which.out))
     warning(paste0("Which values have been removed because there was no such data/-number: "
                    , paste0(which[which(! which %in% which.out)], collapse=", ")))
+  
+  # return
   return(which.out)
 }
 

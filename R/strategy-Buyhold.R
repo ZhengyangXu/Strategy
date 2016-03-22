@@ -59,7 +59,7 @@ plot.buyhold <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
 
   # PLOT Output
   for (i in 1:ncol(prices)) {
-    layout(matrix(1:4, ncol=2, byrow=T), widths = c(0.8, 0.2), height=c(0.65, 0.35))
+    layout(matrix(1:4, ncol=2, byrow=T), widths = c(0.8, 0.2), heights=c(0.65, 0.35))
     #layout.show(1)
     par(mar=c(0, margins[2:4]))
 
