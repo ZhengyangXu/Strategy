@@ -365,7 +365,7 @@ setGeneric(name = "getFilters",
 setMethod(f = "getFilters",
           signature = "Strategy",
           definition = function(object, which) {
-            filters <- object@strat.vals
+            filters <- object@filters
             
             if (is.character(which) && which=="none") return(list())
 
