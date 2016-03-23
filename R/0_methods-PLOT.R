@@ -111,14 +111,14 @@ setMethod(f = "plot",
                 legend.names <- c(colnames(prices[,i]), names(filters))
                 legend("left", legend=legend.names, col=c("black",rainbow(flen)), lty=rep(1,flen+1), cex=0.8, bty="n");
                 
-                # PLOT3: indicators & signals
-                par(mar=c(0, margins[2], 0, margins[4]))
-                # pseudo for same time domain
-                plot.xts(prices[,i], ylim=c(-1,1), type="n", main="", axes=F, auto.grid = T)
-                # axis(4, at=pretty(range(rai[,i])), las=2) # no axis
-                
                 
                 if (layout.len == 6) {
+                  # PLOT3: indicators & signals
+                  par(mar=c(0, margins[2], 0, margins[4]))
+                  # pseudo for same time domain
+                  plot.xts(prices[,i], ylim=c(-1,1), type="n", main="", axes=F, auto.grid = T)
+                  # axis(4, at=pretty(range(rai[,i])), las=2) # no axis
+                  
                   # signals
                   if (show.signals==T) {
                     par(new=T)
