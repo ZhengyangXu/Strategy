@@ -138,9 +138,7 @@ strategy.kama3 <- function(prices, weights=NULL, indicators=NULL, parameters=lis
   if(printSteps==T) print("Signal matrix calculated.")
 
   # SHIFT signals for next trading day period -> shift dates + 1
-  signals_shifted <- signals[-nrow(signals),]
-  index(signals_shifted) <- index(signals[-1,])
-  signals <- signals_shifted
+  signals <- lag(signals, k=1, na.pad=F)
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
   
