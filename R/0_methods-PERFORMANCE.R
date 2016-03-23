@@ -63,6 +63,7 @@ setMethod(f = "performance",
               
             # PERIODICITY prices same as signals
             prices <- prices[index(signals)]
+            prices <- prices[index(signals)]
             
             # VALIDATE Date Range Input!
             # from

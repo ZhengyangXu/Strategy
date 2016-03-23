@@ -100,6 +100,7 @@ Strategy <- function(assets,
   if (!is.xts(assets)) stop("Please provide assets in xts format!")
   if (ncol(assets) == 0) stop("Assets does not have any data column!")
   index(assets) <- as.Date(index(assets), tz="") #index as Date class
+  assets <- as.xts(assets) #as.xts to prevent conversion probs
   if (printSteps==T) print("Assets checked.")
 
   # CHECK assetValueType (match.arg has its own algo to check)
@@ -211,9 +212,9 @@ Strategy <- function(assets,
   strat.Out <- stratFUN(prices = prices, weights = weights, indicators = indicators, parameters = strat.params)
   strat.params <- strat.Out[["parameters"]]
   filters <- strat.Out[["filters"]]
-  signals <- strat.Out[["signals"]]
-  prices <- strat.Out[["prices"]]
-  weights <- strat.Out[["weights"]]
+  signals <- as.xts(strat.Out[["signals"]]) #as.xts to prevent conversion probs
+  prices <- as.xts(strat.Out[["prices"]])   #as.xts to prevent conversion probs
+  weights <- as.xts(strat.Out[["weights"]]) #as.xts to prevent conversion probs
   indicators <- strat.Out[["indicators"]]
   
   if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
@@ -227,7 +228,7 @@ Strategy <- function(assets,
   index(weights) <- as.Date(index(weights), tz="")
   
   # Ensure time consistency
-  weights <- weights[index(signals),]
+  weights <- weights[index(signals)]
   
   # check date compatibility
   if (sum(index(signals) %in% index(prices)) == 0) warning("Signals and prices indexes do not match at all!")
