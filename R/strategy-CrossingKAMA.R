@@ -70,7 +70,7 @@ strategy.crossingkama <- function(prices, weights=NULL, indicators=NULL, paramet
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
   
   filters <- list(MA=ma.vals, KAMA=kama.vals)
-  names(filters) <- c(paste0("MA(", ma.k, ")"), paste0("KAMA(", er.period, ",", ema.slowest, ",", ema.fastest, ")"))
+  names(filters) <- c(paste0("MA(", k, ")"), paste0("KAMA(", er.period, ",", ema.slowest, ",", ema.fastest, ")"))
 
   # OUTPUT
   return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
