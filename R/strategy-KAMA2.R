@@ -91,11 +91,11 @@ strategy.kama2 <- function(prices, weights=NULL, indicators=NULL, parameters=lis
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
   
-  filters <- list(KAMA2=strat.vals)
-  names(filters) <- paste0("KAMA2(",return.lambda, ",", vola.lambda, ",", vola.period ,")")
+  indicators <- list(KAMA2=strat.vals)
+  names(indicators) <- paste0("KAMA2(",return.lambda, ",", vola.lambda, ",", vola.period ,")")
 
   # OUTPUT
-  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
+  return( list(filters=list(), signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
 }
 
 # plot.kama2 <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {

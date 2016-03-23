@@ -144,11 +144,11 @@ strategy.kama3 <- function(prices, weights=NULL, indicators=NULL, parameters=lis
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
   
-  filters <- list(kama3=strat.vals)
-  names(filters) <- paste0("KAMA3(", lambda, ",", vola.periods, ",", rf, ")")
+  indicators <- list(kama3=strat.vals, RAI=rai)
+  names(indicators) <- c(paste0("KAMA3(", lambda, ",", vola.periods, ",", rf, ")"), "RAI")
 
   # OUTPUT
-  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=list(rai=rai), parameters=parameters) )
+  return( list(filters=list(), signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=list(rai=rai), parameters=parameters) )
 }
 
 
