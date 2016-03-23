@@ -99,7 +99,7 @@ Strategy <- function(assets,
   # CHECK assets
   if (!is.xts(assets)) stop("Please provide assets in xts format!")
   if (ncol(assets) == 0) stop("Assets does not have any data column!")
-  index(assets) <- as.Date(index(assets)) #index as Date class
+  index(assets) <- as.Date(index(assets), tz="") #index as Date class
   if (printSteps==T) print("Assets checked.")
 
   # CHECK assetValueType (match.arg has its own algo to check)
@@ -222,9 +222,9 @@ Strategy <- function(assets,
     stop("There must be a filter output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
   
     # Ensure same date format
-  index(prices) <- as.Date(index(prices))
-  index(signals) <- as.Date(index(signals))
-  index(weights) <- as.Date(index(weights))
+  index(prices) <- as.Date(index(prices), tz="")
+  index(signals) <- as.Date(index(signals), tz="")
+  index(weights) <- as.Date(index(weights), tz="")
   
   # Ensure time consistency
   weights <- weights[index(signals),]
