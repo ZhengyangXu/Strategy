@@ -49,7 +49,7 @@ strategy.crossingkama <- function(prices, weights=NULL, indicators=NULL, paramet
   smoothing.const <- (efficient.ratio * (2/(ema.fastest + 1) - 2/(ema.slowest + 1)) + 2/(ema.slowest + 1) )^2
 
   # KAMA VALUES
-  kama.vals <- prices[index(smoothing.const)]*NA # initialize
+  kama.vals <- prices[index(prices) %in% index(smoothing.const)]*NA # initialize
   kama.vals[1,] <- apply(prices[1:(er.period+1),], 2, mean) # initial KAMA value is simple mean
 
   for (i in 2:nrow(smoothing.const)) { #i<-2
@@ -65,97 +65,98 @@ strategy.crossingkama <- function(prices, weights=NULL, indicators=NULL, paramet
   signals <- signals + (diff >=  strat.thre)
 
   # SHIFT signals for next trading day period -> shift dates + 1
-  signals_shifted <- signals[1:(nrow(signals)-1),]
-  index(signals_shifted) <- index(signals[2:nrow(signals),])
-  signals <- signals_shifted
+  signals <- lag(signals, k=1, na.pad=F)
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
+  
+  filters <- list(MA=ma.vals, KAMA=kama.vals)
+  names(filters) <- c(paste0("MA(", ma.k, ")"), paste0("KAMA(", er.period, ",", ema.slowest, ",", ema.fastest, ")"))
 
   # OUTPUT
-  return( list(strat.vals=list(MA.vals=ma.vals, KAMA.vals=kama.vals), signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
+  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
 }
 
-plot.crossingkama <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
-  # GET VALUES
-  prices <- getPrices(object, from=from, until=until, which=which)
-  ma.vals <- getStratVals(object)[["MA.vals"]][index(prices), colnames(prices)]
-  kama.vals <- getStratVals(object)[["KAMA.vals"]][index(prices), colnames(prices)]
-  performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
-
-  # DECLARE Parameters
-  parameters <- getParameters(object)
-  er.period <- parameters[["er.period"]]
-  ema.slowest <- parameters[["ema.slowest"]]
-  ema.fastest <- parameters[["ema.fastest"]]
-  k <- parameters[["ma.k"]]
-  strat.thre <- parameters[["threshold"]]
-  period <- parameters[["period"]]
-
-  # PLOT main
-  if (is.null(main)) {
-    plot.main <- colnames(prices)
-  } else {
-    if (!is.character(main)) stop("Please provide plot headings as character!")
-    if (length(main) == 1) plot.main <- rep(main, ncol(prices))
-  }
-  if (length(plot.main) != ncol(prices))
-    stop("Please provide as many headings as graphics!")
-
-  par.mar <- par()$mar # keep standard margins
-  margins <- c(7, 4.1, 4.1, 3)
-
-  # PLOT Output
-  for (i in 1:ncol(prices)) { #i<-1
-    layout(matrix(1:4, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.65, 0.35))
-    #layout.show(2)
-
-    # PLOT1: Plot Price Values
-    par(mar=c(0, margins[2:4]))
-    plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
-    axis(2, las=2)
-    # PLOT KAMA vals
-    lines(kama.vals[,i], col="red")
-    # PLOT MA vals
-    lines(ma.vals[,i], col="orange")
-    if (strat.thre > 0) {
-      lines(ma.vals[,i] + strat.thre, col="blue", lty=2)
-      lines(ma.vals[,i] - strat.thre, col="blue", lty=2)
-    }
-
-    # PLOT2: LEGEND prices
-    par(mar=c(0,0,0,0))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    if (strat.thre > 0) {
-      legend("left", legend=c(colnames(prices[,i])
-                                , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
-                                , paste0("MA(", k, ")")
-                                , paste0("threshold(",strat.thre,")"))
-             , col=c("black", "red", "orange", "blue"), lty=c(1,1,1,2), cex=0.8, bty="n");
-    } else {
-      legend("left", legend=c(colnames(prices[,i])
-                                , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
-                                , paste0("MA(", k, ")"))
-             , col=c("black", "red", "orange"), lty=c(1,1,1), cex=0.8, bty="n");
-    }
-
-    # PLOT3: PERFORMANCE
-    par(mar=c(margins[1:2], 0, margins[4]))
-    # pseudo for same time domain
-    plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F)
-    axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
-    axis(4, at=pretty(range(performance[,i])), las=2) # right axis
-    # PERFORMANCE
-    lines(performance[,i], col="darkgray")
-
-    # PLOT4: LEGEND performance
-    par(mar=c(margins[1],0,0,0))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    # LEGEND
-    legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
-
-  } # for prices
-
-  layout(1) #reset layout
-  par(mar=par.mar) #reset margins
-}
-
+# plot.crossingkama <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
+#   # GET VALUES
+#   prices <- getPrices(object, from=from, until=until, which=which)
+#   ma.vals <- getStratVals(object)[["MA.vals"]][index(prices), colnames(prices)]
+#   kama.vals <- getStratVals(object)[["KAMA.vals"]][index(prices), colnames(prices)]
+#   performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
+# 
+#   # DECLARE Parameters
+#   parameters <- getParameters(object)
+#   er.period <- parameters[["er.period"]]
+#   ema.slowest <- parameters[["ema.slowest"]]
+#   ema.fastest <- parameters[["ema.fastest"]]
+#   k <- parameters[["ma.k"]]
+#   strat.thre <- parameters[["threshold"]]
+#   period <- parameters[["period"]]
+# 
+#   # PLOT main
+#   if (is.null(main)) {
+#     plot.main <- colnames(prices)
+#   } else {
+#     if (!is.character(main)) stop("Please provide plot headings as character!")
+#     if (length(main) == 1) plot.main <- rep(main, ncol(prices))
+#   }
+#   if (length(plot.main) != ncol(prices))
+#     stop("Please provide as many headings as graphics!")
+# 
+#   par.mar <- par()$mar # keep standard margins
+#   margins <- c(7, 4.1, 4.1, 3)
+# 
+#   # PLOT Output
+#   for (i in 1:ncol(prices)) { #i<-1
+#     layout(matrix(1:4, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.65, 0.35))
+#     #layout.show(2)
+# 
+#     # PLOT1: Plot Price Values
+#     par(mar=c(0, margins[2:4]))
+#     plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
+#     axis(2, las=2)
+#     # PLOT KAMA vals
+#     lines(kama.vals[,i], col="red")
+#     # PLOT MA vals
+#     lines(ma.vals[,i], col="orange")
+#     if (strat.thre > 0) {
+#       lines(ma.vals[,i] + strat.thre, col="blue", lty=2)
+#       lines(ma.vals[,i] - strat.thre, col="blue", lty=2)
+#     }
+# 
+#     # PLOT2: LEGEND prices
+#     par(mar=c(0,0,0,0))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     if (strat.thre > 0) {
+#       legend("left", legend=c(colnames(prices[,i])
+#                                 , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
+#                                 , paste0("MA(", k, ")")
+#                                 , paste0("threshold(",strat.thre,")"))
+#              , col=c("black", "red", "orange", "blue"), lty=c(1,1,1,2), cex=0.8, bty="n");
+#     } else {
+#       legend("left", legend=c(colnames(prices[,i])
+#                                 , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
+#                                 , paste0("MA(", k, ")"))
+#              , col=c("black", "red", "orange"), lty=c(1,1,1), cex=0.8, bty="n");
+#     }
+# 
+#     # PLOT3: PERFORMANCE
+#     par(mar=c(margins[1:2], 0, margins[4]))
+#     # pseudo for same time domain
+#     plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F)
+#     axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
+#     axis(4, at=pretty(range(performance[,i])), las=2) # right axis
+#     # PERFORMANCE
+#     lines(performance[,i], col="darkgray")
+# 
+#     # PLOT4: LEGEND performance
+#     par(mar=c(margins[1],0,0,0))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     # LEGEND
+#     legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
+# 
+#   } # for prices
+# 
+#   layout(1) #reset layout
+#   par(mar=par.mar) #reset margins
+# }
+# 
