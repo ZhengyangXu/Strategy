@@ -122,7 +122,7 @@ setMethod(f = "plot",
                   # signals
                   if (show.signals==T) {
                     par(new=T)
-                    signals_i <- merge.xts(signals[,i], prices[,i])[,1] # resolve time domain issue
+                    signals_i <- na.locf(merge.xts(signals[,i], prices[,i])[,1]) # resolve time domain issue
                     signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
                     barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
                   }
