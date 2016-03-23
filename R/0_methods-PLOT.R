@@ -123,16 +123,18 @@ setMethod(f = "plot",
                   if (show.signals==T) {
                     par(new=T)
                     signals_i <- merge.xts(signals[,i], prices[,i])[,1] # resolve time domain issue
-                    barplot(signals_i, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
-                    abline(h=0, col="gray")
+                    signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
+                    barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
                   }
+                  abline(h=0, col="gray")
                   
                   # indicators
                   if (ilen > 0) {
                     for (indNo in 1:ilen) { #indNo<-1
                       par(new=T)
                       ind <- merge.xts(indicators[[indNo]], prices[,i])[,1] # resolve time domain issue
-                      plot.xts(na.locf(ind), col=rainbow(ilen)[indNo], type="l", main="", axes=F, auto.grid=F)
+                      ind_range <- c(-1,1)*max(abs(ind), na.rm=T)
+                      plot.xts(na.locf(ind), ylim=ind_range, col=rainbow(ilen)[indNo], type="l", main="", axes=F, auto.grid=F)
                     }  
                   } 
                   graphics::box() # draw box line
