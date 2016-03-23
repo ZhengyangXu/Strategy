@@ -70,93 +70,94 @@ strategy.kama <- function(prices, weights=NULL, indicators=NULL, parameters=list
   if(printSteps==T) print("Signal matrix calculated.")
 
   # SHIFT signals for next trading day period -> shift dates + 1
-  signals_shifted <- signals[-nrow(signals),]
-  index(signals_shifted) <- index(signals[-1,])
-  signals <- signals_shifted
+  signals <- lag(signals, k=1, na.pad=F)
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
+  
+  filters <- list(KAMA=strat.vals)
+  names(filters) <- paste0("KAMA(", er.period, ",", ema.slowest, ",", ema.fastest, ")")
 
   # OUTPUT
-  return( list(strat.vals=list(KAMA.vals=strat.vals), signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
+  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
 }
 
-plot.kama <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
-  # GET VALUES
-  prices <- getPrices(object, from=from, until=until, which=which)
-  kama.vals <- getStratVals(object)[["KAMA.vals"]][index(prices), colnames(prices)]
-  performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
-
-  # DECLARE Parameters
-  parameters <- getParameters(object)
-  er.period <- parameters[["er.period"]]
-  ema.slowest <- parameters[["ema.slowest"]]
-  ema.fastest <- parameters[["ema.fastest"]]
-  strat.thre <- parameters[["threshold"]]
-  period <- parameters[["period"]]
-
-  # PLOT main
-  if (is.null(main)) {
-    plot.main <- colnames(prices)
-  } else {
-    if (!is.character(main)) stop("Please provide plot headings as character!")
-    if (length(main) == 1) plot.main <- rep(main, ncol(prices))
-  }
-  if (length(plot.main) != ncol(prices))
-    stop("Please provide as many headings as graphics!")
-
-  par.mar <- par()$mar # keep standard margins
-  margins <- c(7, 4.1, 4.1, 3)
-
-  # PLOT Output
-  for (i in 1:ncol(prices)) { #i<-1
-    layout(matrix(1:4, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.65, 0.35))
-    #layout.show(2)
-
-    # PLOT1: Plot Price Values
-    par(mar=c(0, margins[2:4]))
-    plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
-    axis(2, las=2)
-    # PLOT KAMA vals
-    lines(kama.vals[,i], col="red")
-    if (strat.thre > 0) {
-      lines(kama.vals[,i] + strat.thre, lty=2, col="blue")
-      lines(kama.vals[,i] - strat.thre, lty=2, col="blue")
-    }
-
-    # PLOT2: LEGEND prices
-    par(mar=c(0,0,0,0))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    if (strat.thre > 0) {
-      legend("left", legend=c(colnames(prices[,i])
-                                , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
-                                , "threshold")
-             , col=c("black", "red", "blue"), lty=c(1,1,2), cex=0.8, bty="n");
-    } else {
-      legend("left", legend=c(colnames(prices[,i])
-                                , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")"))
-             , col=c("black", "red"), lty=c(1,1), cex=0.8, bty="n");
-    }
-
-
-    # PLOT3: PERFORMANCE
-    par(mar=c(margins[1:2], 0, margins[4]))
-    # pseudo for same time domain
-    plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F)
-    axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
-    axis(4, at=pretty(range(performance[,i])), las=2) # right axis
-    # PERFORMANCE
-    lines(performance[,i], col="darkgray")
-
-    # PLOT4: LEGEND performance
-    par(mar=c(margins[1],0,0,0))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    # LEGEND
-    legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
-
-  } # for prices
-
-  layout(1) #reset layout
-  par(mar=par.mar) #reset margins
-}
-
-
+# plot.kama <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
+#   # GET VALUES
+#   prices <- getPrices(object, from=from, until=until, which=which)
+#   kama.vals <- getStratVals(object)[["KAMA.vals"]][index(prices), colnames(prices)]
+#   performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
+# 
+#   # DECLARE Parameters
+#   parameters <- getParameters(object)
+#   er.period <- parameters[["er.period"]]
+#   ema.slowest <- parameters[["ema.slowest"]]
+#   ema.fastest <- parameters[["ema.fastest"]]
+#   strat.thre <- parameters[["threshold"]]
+#   period <- parameters[["period"]]
+# 
+#   # PLOT main
+#   if (is.null(main)) {
+#     plot.main <- colnames(prices)
+#   } else {
+#     if (!is.character(main)) stop("Please provide plot headings as character!")
+#     if (length(main) == 1) plot.main <- rep(main, ncol(prices))
+#   }
+#   if (length(plot.main) != ncol(prices))
+#     stop("Please provide as many headings as graphics!")
+# 
+#   par.mar <- par()$mar # keep standard margins
+#   margins <- c(7, 4.1, 4.1, 3)
+# 
+#   # PLOT Output
+#   for (i in 1:ncol(prices)) { #i<-1
+#     layout(matrix(1:4, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.65, 0.35))
+#     #layout.show(2)
+# 
+#     # PLOT1: Plot Price Values
+#     par(mar=c(0, margins[2:4]))
+#     plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
+#     axis(2, las=2)
+#     # PLOT KAMA vals
+#     lines(kama.vals[,i], col="red")
+#     if (strat.thre > 0) {
+#       lines(kama.vals[,i] + strat.thre, lty=2, col="blue")
+#       lines(kama.vals[,i] - strat.thre, lty=2, col="blue")
+#     }
+# 
+#     # PLOT2: LEGEND prices
+#     par(mar=c(0,0,0,0))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     if (strat.thre > 0) {
+#       legend("left", legend=c(colnames(prices[,i])
+#                                 , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")")
+#                                 , "threshold")
+#              , col=c("black", "red", "blue"), lty=c(1,1,2), cex=0.8, bty="n");
+#     } else {
+#       legend("left", legend=c(colnames(prices[,i])
+#                                 , paste0("KAMA(", er.period, ",", ema.fastest, ",", ema.slowest, ")"))
+#              , col=c("black", "red"), lty=c(1,1), cex=0.8, bty="n");
+#     }
+# 
+# 
+#     # PLOT3: PERFORMANCE
+#     par(mar=c(margins[1:2], 0, margins[4]))
+#     # pseudo for same time domain
+#     plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F)
+#     axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
+#     axis(4, at=pretty(range(performance[,i])), las=2) # right axis
+#     # PERFORMANCE
+#     lines(performance[,i], col="darkgray")
+# 
+#     # PLOT4: LEGEND performance
+#     par(mar=c(margins[1],0,0,0))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     # LEGEND
+#     legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
+# 
+#   } # for prices
+# 
+#   layout(1) #reset layout
+#   par(mar=par.mar) #reset margins
+# }
+# 
+# 

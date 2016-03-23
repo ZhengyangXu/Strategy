@@ -46,7 +46,7 @@ setMethod(f = "plot",
     
               # GET VALUES
               prices <- getPrices(object, from=from, until=until, which=which)
-              filters <- lapply(getStratVals(object, which=which.filters), function(x) x[paste0(start(prices),"::",end(prices)), colnames(prices)])
+              filters <- lapply(getFilters(object, which=which.filters), function(x) x[paste0(start(prices),"::",end(prices)), colnames(prices)])
               
               indicators <- lapply(getIndicators(object, which=which.indicators), function(x) x[paste0(start(prices),"::",end(prices))])
               signals <- getSignals(object, which=which)[paste0(start(prices),"::",end(prices))]

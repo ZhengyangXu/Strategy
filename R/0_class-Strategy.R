@@ -24,7 +24,7 @@ setClass(Class="Strategy",
            # output
            stratFUN = "function",
            plotFUN = "funNULL",
-           strat.vals = "list",
+           filters = "list",
            signals = "xts",
            backtest.signals = "xts",
            backtest.parameters = "list",
@@ -36,7 +36,7 @@ setClass(Class="Strategy",
          , prototype = prototype(
            weights = xts(),
            indicators = list(),
-           strat.vals = list(),
+           filters = list(),
            backtest.signals = xts("Call backtest(StratObj, ...) to perform backtest.", order.by=Sys.Date()),
            backtest.parameters = list(),
            backtest.setup = matrix(),
@@ -210,7 +210,7 @@ Strategy <- function(assets,
   # CALL strategy function and set values
   strat.Out <- stratFUN(prices = prices, weights = weights, indicators = indicators, parameters = strat.params)
   strat.params <- strat.Out[["parameters"]]
-  strat.vals <- strat.Out[["strat.vals"]]
+  filters <- strat.Out[["filters"]]
   signals <- strat.Out[["signals"]]
   prices <- strat.Out[["prices"]]
   weights <- strat.Out[["weights"]]
@@ -218,7 +218,7 @@ Strategy <- function(assets,
   
   if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
     stop("There must be an indicators output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
-  if (!is.list(strat.vals) || length(names(strat.vals)) != length(strat.vals)) 
+  if (!is.list(filters) || length(names(filters)) != length(filters)) 
     stop("There must be a filter output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
   
     # Ensure same date format
@@ -248,7 +248,7 @@ Strategy <- function(assets,
       , plotFUN = plotFUN
       , strat = strat
       , strat.params = strat.params
-      , strat.vals = strat.vals
+      , filters = filters
       , signals = signals
       # , backtest.performance = NOT SET HERE, will be set in backtesting method
       # , backtest.parameters = NOT SET HERE, will be set in backtesting method

@@ -143,95 +143,98 @@ strategy.kama3 <- function(prices, weights=NULL, indicators=NULL, parameters=lis
   signals <- signals_shifted
 
   if(printSteps==T) print("Signal matrix shifted by 1 time period.")
+  
+  filters <- list(kama3=strat.vals)
+  names(filters) <- paste0("KAMA3(", lambda, ",", vola.periods, ",", rf, ")")
 
   # OUTPUT
-  return( list(strat.vals=list(KAMA3.vals=strat.vals), signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=list(rai=rai), parameters=parameters) )
+  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=list(rai=rai), parameters=parameters) )
 }
 
 
-plot.kama3 <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
-  # GET VALUES
-  prices <- getPrices(object, from=from, until=until, which=which)
-  strat.vals <- getStratVals(object)[["KAMA3.vals"]][index(prices), colnames(prices)]
-  performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
-
-  # DECLARE Parameters
-  parameters <- getParameters(object)
-  vola.periods <- parameters[["vola.periods"]]
-  strat.thre <- parameters[["threshold"]]
-
-  # RAI
-  rai <- getIndicators(object)[["rai"]][index(prices),1]
-
-  # PLOT main
-  if (is.null(main)) {
-    plot.main <- colnames(prices)
-  } else {
-    if (!is.character(main)) stop("Please provide plot headings as character!")
-    if (length(main) == 1) plot.main <- rep(main, ncol(prices))
-  }
-  if (length(plot.main) != ncol(prices))
-    stop("Please provide as many headings as graphics!")
-
-  par.mar <- par()$mar # keep standard margins
-  margins <- c(7, 4.1, 4.1, 3)
-
-  for (i in 1:ncol(prices)) { #i<-1
-    layout(matrix(1:6, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.5, 0.2, 0.3))
-    #layout.show(1)
-
-    # PLOT1: Plot prices
-    par(mar=c(0, margins[2:4]))
-    plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
-    axis(2, las=2)
-
-    # PLOT2: LEGEND Prices
-    par(mar=rep(0,4))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    legend("left", legend=colnames(prices)[i], lty=c(1), cex=0.8, bty="n")
-
-    # PLOT3: Plot KAMA3 and RAI
-    par(mar=c(0, margins[2], 0, margins[4]))
-    ylim <- c(min(cbind(strat.vals[,i]-strat.thre,rai[index(strat.vals)]), rm.na=T), max(cbind(strat.vals[,i]+strat.thre,rai[index(strat.vals)]), rm.na=T))
-    plot(prices[,i], ylim=ylim, type="n", main="", minor.ticks=F, axes=F) # no data
-    abline(h=0, col="gray")
-    # RAI
-    lines(rai, col="black")
-    axis(4, at=pretty(range(strat.vals[,i])), las=2) # right axis
-    # KAMA3
-    lines(strat.vals[,i], col="red")
-    if (strat.thre > 0) {
-      abline(h=strat.thre, lty=2, col="blue")
-      abline(h=-strat.thre, lty=2, col="blue")
-    }
-
-    # PLOT4: LEGEND KAMA3 i + RAI
-    par(mar=rep(0,4))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    if (strat.thre > 0) {
-      legend("left", legend=c(paste0("KAMA3(", vola.periods, ")"), paste0("threshold(", strat.thre, ")"), "RAI"), col=c("red", "blue", "black"), lty=c(1,2,1), cex=0.8, bty="n")
-    } else {
-      legend("left", legend=c(paste0("KAMA3(", vola.periods, ")"), "RAI"), col=c("red", "black"), lty=c(1,1), cex=0.8, bty="n")
-    }
-
-    # PLOT5: PERFORMANCE
-    par(mar=c(7, margins[2], 0, margins[4]))
-    # pseudo for same time domain
-    plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F, minor.ticks=F)
-    axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
-    axis(2, las=2) # right axis
-    # PERFORMANCE
-    lines(performance[,i], col="darkgray")
-
-    # PLOT6: LEGEND performance
-    par(mar=c(margins[1],0,0,0))
-    plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-    # LEGEND
-    legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
-  } # for prices
-
-  layout(1) #reset layout
-  par(mar=par.mar) #reset margins
-}
+# plot.kama3 <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {
+#   # GET VALUES
+#   prices <- getPrices(object, from=from, until=until, which=which)
+#   strat.vals <- getStratVals(object)[["KAMA3.vals"]][index(prices), colnames(prices)]
+#   performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which)
+# 
+#   # DECLARE Parameters
+#   parameters <- getParameters(object)
+#   vola.periods <- parameters[["vola.periods"]]
+#   strat.thre <- parameters[["threshold"]]
+# 
+#   # RAI
+#   rai <- getIndicators(object)[["rai"]][index(prices),1]
+# 
+#   # PLOT main
+#   if (is.null(main)) {
+#     plot.main <- colnames(prices)
+#   } else {
+#     if (!is.character(main)) stop("Please provide plot headings as character!")
+#     if (length(main) == 1) plot.main <- rep(main, ncol(prices))
+#   }
+#   if (length(plot.main) != ncol(prices))
+#     stop("Please provide as many headings as graphics!")
+# 
+#   par.mar <- par()$mar # keep standard margins
+#   margins <- c(7, 4.1, 4.1, 3)
+# 
+#   for (i in 1:ncol(prices)) { #i<-1
+#     layout(matrix(1:6, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=c(0.5, 0.2, 0.3))
+#     #layout.show(1)
+# 
+#     # PLOT1: Plot prices
+#     par(mar=c(0, margins[2:4]))
+#     plot(prices[,i], main=plot.main[i], minor.ticks=F, axes=F)
+#     axis(2, las=2)
+# 
+#     # PLOT2: LEGEND Prices
+#     par(mar=rep(0,4))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     legend("left", legend=colnames(prices)[i], lty=c(1), cex=0.8, bty="n")
+# 
+#     # PLOT3: Plot KAMA3 and RAI
+#     par(mar=c(0, margins[2], 0, margins[4]))
+#     ylim <- c(min(cbind(strat.vals[,i]-strat.thre,rai[index(strat.vals)]), rm.na=T), max(cbind(strat.vals[,i]+strat.thre,rai[index(strat.vals)]), rm.na=T))
+#     plot(prices[,i], ylim=ylim, type="n", main="", minor.ticks=F, axes=F) # no data
+#     abline(h=0, col="gray")
+#     # RAI
+#     lines(rai, col="black")
+#     axis(4, at=pretty(range(strat.vals[,i])), las=2) # right axis
+#     # KAMA3
+#     lines(strat.vals[,i], col="red")
+#     if (strat.thre > 0) {
+#       abline(h=strat.thre, lty=2, col="blue")
+#       abline(h=-strat.thre, lty=2, col="blue")
+#     }
+# 
+#     # PLOT4: LEGEND KAMA3 i + RAI
+#     par(mar=rep(0,4))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     if (strat.thre > 0) {
+#       legend("left", legend=c(paste0("KAMA3(", vola.periods, ")"), paste0("threshold(", strat.thre, ")"), "RAI"), col=c("red", "blue", "black"), lty=c(1,2,1), cex=0.8, bty="n")
+#     } else {
+#       legend("left", legend=c(paste0("KAMA3(", vola.periods, ")"), "RAI"), col=c("red", "black"), lty=c(1,1), cex=0.8, bty="n")
+#     }
+# 
+#     # PLOT5: PERFORMANCE
+#     par(mar=c(7, margins[2], 0, margins[4]))
+#     # pseudo for same time domain
+#     plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F, minor.ticks=F)
+#     axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
+#     axis(2, las=2) # right axis
+#     # PERFORMANCE
+#     lines(performance[,i], col="darkgray")
+# 
+#     # PLOT6: LEGEND performance
+#     par(mar=c(margins[1],0,0,0))
+#     plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
+#     # LEGEND
+#     legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
+#   } # for prices
+# 
+#   layout(1) #reset layout
+#   par(mar=par.mar) #reset margins
+# }
 
 

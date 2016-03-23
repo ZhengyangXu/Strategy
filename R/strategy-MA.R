@@ -47,7 +47,7 @@ strategy.ma <- function(prices, weights, indicators=list(), parameters=list(), p
   names(filters) <- paste0("MA(",k,")")
 
   # OUTPUT
-  return( list(strat.vals=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
+  return( list(filters=filters, signals=signals, prices=prices, logReturns=logReturns, weights=weights, indicators=indicators, parameters=parameters) )
 }
 
 # plot.ma <- function(object, from=NULL, until=NULL, which=NULL, main=NULL) {

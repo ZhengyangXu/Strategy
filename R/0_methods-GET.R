@@ -336,19 +336,19 @@ setMethod(f = "getSignals",
 # Returns a list with strategy values
 # as xts objects
 # e.g. the MA-values and KAMA-values of the crossing KAMA strategy
-setGeneric(name = "getStratVals",
+setGeneric(name = "getFilters",
            def = function(object, which=NULL) {
-             standardGeneric("getStratVals")
+             standardGeneric("getFilters")
            }
 )
 
 
 #' @export
-#' @name getStratVals
-#' @aliases getStratVals
+#' @name getFilters
+#' @aliases getFilters
 #' @title Get strategy values from \code{Strategy}-object
 #' @description Gets the strategy values of an object of class \code{Strategy} that were output from strategy calculation.
-#' @usage getStratVals(object)
+#' @usage getFilters(object)
 #' @param object An object of class \code{Strategy}.
 #' @param which Which filters shall be returned. Either list number or names to be passed.
 #' @examples
@@ -359,10 +359,10 @@ setGeneric(name = "getStratVals",
 #' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 #'
 #' # Get strategy values from MA(200)-Strategy
-#' getStratVals(myStrat.MA) # all strategy values returned
+#' getFilters(myStrat.MA) # all strategy values returned
 #'
 #' ##End(Not run)
-setMethod(f = "getStratVals",
+setMethod(f = "getFilters",
           signature = "Strategy",
           definition = function(object, which) {
             filters <- object@strat.vals
