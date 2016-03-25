@@ -117,8 +117,9 @@ setMethod(f = "performance",
               perf1 <- cumprod(1+ret)*volume
               # add fix costs
               costs.fix.cum <- cumsum(trades * costs.fix)
-              # calculate performances for assets including all costs
-              performance <- perf1 - costs.fix.cum
+              # calculate value for assets including all costs
+              perf2 <- perf1 - costs.fix.cum
+              performance <- perf2/as.numeric(perf2[1,])
             } else {
               # calculate performances for assets
               performance <- cumprod(ret*signals  + 1) # = cumprod ( arith.return * signals + 1)
