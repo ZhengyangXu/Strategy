@@ -114,7 +114,7 @@ setMethod(f = "performance",
               coredata(trades) <- pmin(coredata(trades),2)  #max 2 trades
               # add relative costs
               ret <- ret - sign(signals) * trades * costs.rel/100
-              perf1 <- cumprod(1+ret)*volume
+              perf1 <- cumprod(ret*signals + 1)*volume
               # add fix costs
               costs.fix.cum <- cumsum(trades * costs.fix)
               # calculate value for assets including all costs
@@ -122,7 +122,7 @@ setMethod(f = "performance",
               performance <- perf2/as.numeric(perf2[1,])
             } else {
               # calculate performances for assets
-              performance <- cumprod(ret*signals  + 1) # = cumprod ( arith.return * signals + 1)
+              performance <- cumprod(ret*signals + 1) # = cumprod ( arith.return * signals + 1)
             }
 
 
