@@ -28,6 +28,7 @@ setMethod(f = "plot",
             
             object <- x
             which <- which.assets
+            fontsize <- 1 # generally not change
             
             if (!is.null(object@plotFUN)) {
               plot.args.def <- names(formals(object@plotFUN))
@@ -109,7 +110,7 @@ setMethod(f = "plot",
                 par(mar=c(0,0,0,0))
                 plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
                 legend.names <- c(colnames(prices[,i]), names(filters))
-                legend("left", legend=legend.names, col=c("black",rainbow(flen)), lty=rep(1,flen+1), cex=0.8, bty="n");
+                legend("left", legend=legend.names, col=c("black",rainbow(flen)), lty=rep(1,flen+1), cex=fontsize, bty="n");
                 
                 
                 if (layout.len == 6) {
@@ -143,9 +144,9 @@ setMethod(f = "plot",
                   par(mar=c(0,0,0,0))
                   plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
                   if (show.signals==T) {
-                    legend("left", legend=c("Signals", names(indicators)), col=c("lightblue", rainbow(ilen)), lty=rep(1,1+ilen), cex=0.8, bty="n");
+                    legend("left", legend=c("Signals", names(indicators)), col=c("lightblue", rainbow(ilen)), lty=rep(1,1+ilen), cex=fontsize, bty="n");
                   } else {
-                    legend("left", legend=names(indicators), col=rainbow(ilen), lty=rep(1,ilen), cex=0.8, bty="n");
+                    legend("left", legend=names(indicators), col=rainbow(ilen), lty=rep(1,ilen), cex=fontsize, bty="n");
                   }
                 }
                 
@@ -163,7 +164,7 @@ setMethod(f = "plot",
                 par(mar=c(margins[1],0,0,0))
                 plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
                 # LEGEND
-                legend("left", legend="Performance", col=c("darkgray"), lty=c(1), cex=0.8, bty="n")
+                legend("left", legend="Performance", col=c("darkgray"), lty=1, cex=fontsize, bty="n")
                 
               } # for prices
               
