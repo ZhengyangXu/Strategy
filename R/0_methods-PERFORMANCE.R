@@ -63,7 +63,6 @@ setMethod(f = "performance",
               
             # PERIODICITY prices same as signals
             prices <- prices[index(signals)]
-            prices <- prices[index(signals)]
             
             # VALIDATE Date Range Input!
             # from
@@ -112,18 +111,20 @@ setMethod(f = "performance",
               volume <- object@volume
               trades <- abs(diff(signals, na.pad=T))
               trades[1,] <- 0
-              coredata(trades) <- pmin(coredata(trades),2)
-              # add costs
+              coredata(trades) <- pmin(coredata(trades),2)  #max 2 trades
+              # add relative costs
               ret <- ret - sign(signals) * trades * costs.rel/100
-              # fix costs estimated through percentage of fix costs per current volume (=performance*initialVolume)
-              costs.fix.rel <- trades * costs.fix / (cumprod(ret*signals  + 1) * volume * weights) # estimation of fixed cost percentage
-              ret <- ret - costs.fix.rel * sign(signals)
-            } 
+              perf1 <- cumprod(1+ret)*volume
+              # add fix costs
+              costs.fix.cum <- cumsum(trades * costs.fix)
+              # calculate performances for assets including all costs
+              performance <- perf1 - costs.fix.cum
+            } else {
+              # calculate performances for assets
+              performance <- cumprod(ret*signals  + 1) # = cumprod ( arith.return * signals + 1)
+            }
 
-            
-            # calculate performances for assets
-            performance <- cumprod(ret*signals  + 1) # = cumprod ( arith.return * signals + 1)
-            
+
             # weight performances to portfolio level
             if (of == "portfolio") {
               # scale weights (in case not all assets selected)
