@@ -574,10 +574,10 @@ setMethod(f = "hitratio",
             of <- match.arg(of)
             type <- match.arg(type)
             
-            prices <- getPrices(object, from=from, until=until, which=which)
+            # performance to include costs, treated as price series
+            prices <- performance(object, of=of, from=from, until=until, which=which, include.costs=include.costs, use.backtest=use.backtest)
+            #prices <- getPrices(object, from=from, until=until, which=which)
             signals <- getSignals(object, which=which, use.backtest=use.backtest)[paste0(from,"::",until)]
-            logReturns <- .PricesToLogReturns(prices)[index(signals)]
-            signals <- signals[index(logReturns)]
             
             # init variable hitratios
             hitratios <- rep(0, ncol(prices))
@@ -602,6 +602,8 @@ setMethod(f = "hitratio",
                 hitratios[i] <- hitratioFUN(prices[,i], signals[,i], trades[,i])
               }
             } else if (type == "per.signal") {
+              logReturns <- .PricesToLogReturns(prices)[index(signals)]
+              signals <- signals[index(logReturns)]
               for (i in 1:ncol(prices)) { #i<-1
                 # exclude cash signals
                 idx <- index(signals[,i]!=0)
