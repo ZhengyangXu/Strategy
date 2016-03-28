@@ -65,6 +65,11 @@ setMethod(f = "plot",
                 prices.min <- apply(prices, 2, min)
                 prices.max <- apply(prices, 2, max)
               }
+              
+              if (show.signals==T) {
+                trades <- lag(abs(diff(signals, na.pad=T))>0, k=-1) #last date of period 
+                trades[nrow(trades),] <- T #last period mark
+              }
             
               # PLOT main
               if (is.null(main)) {
@@ -93,10 +98,12 @@ setMethod(f = "plot",
                 layout(matrix(1:layout.len, ncol=2, byrow=T), widths=c(0.8, 0.2), heights=heights)
                 #layout.show(2)
                 
+                prices_i <- prices[,i]
+                
                 # PLOT1: Plot Price Values
                 par(mar=c(0, margins[2:4]))              
-                plot.xts(prices[,i], ylim=c(prices.min[i],prices.max[i]), main=plot.main[i], minor.ticks=F, axes=F, type="n")
-                lines(prices[,i], col="black")
+                plot.xts(prices_i, ylim=c(prices.min[i],prices.max[i]), main=plot.main[i], minor.ticks=F, axes=F, type="n")
+                lines(prices_i, col="black")
                 axis(2, las=2)
                 # Draw filter vals
                 if (flen > 0) {
@@ -109,22 +116,24 @@ setMethod(f = "plot",
                 # PLOT2: LEGEND prices
                 par(mar=c(0,0,0,0))
                 plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
-                legend.names <- c(colnames(prices[,i]), names(filters))
+                legend.names <- c(colnames(prices_i), names(filters))
                 legend("left", legend=legend.names, col=c("black",rainbow(flen)), lty=rep(1,flen+1), cex=fontsize, bty="n");
                 
                 
                 if (layout.len == 6) {
+                  
                   # PLOT3: indicators & signals
                   par(mar=c(0, margins[2], 0, margins[4]))
                   # pseudo for same time domain
-                  plot.xts(prices[,i], ylim=c(-1,1), type="n", main="", axes=F, auto.grid = T)
+                  plot.xts(prices_i, ylim=c(-1,1), type="n", main="", axes=F, auto.grid = T)
                   # axis(4, at=pretty(range(rai[,i])), las=2) # no axis
                   
                   # signals
                   if (show.signals==T) {
                     par(new=T)
-                    signals_i <- na.locf(merge.xts(signals[,i], prices[,i])[,1]) # resolve time domain issue
+                    signals_i <- na.fill(na.locf(merge.xts(signals[,i], prices_i)[,1]), 0) # resolve time domain issue
                     signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
+                    # plot
                     barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
                   }
                   abline(h=0, col="gray")
@@ -133,7 +142,7 @@ setMethod(f = "plot",
                   if (ilen > 0) {
                     for (indNo in 1:ilen) { #indNo<-1
                       par(new=T)
-                      ind <- merge.xts(indicators[[indNo]], prices[,i])[,1] # resolve time domain issue
+                      ind <- merge.xts(indicators[[indNo]], prices_i)[,1] # resolve time domain issue
                       ind_range <- c(-1,1)*max(abs(ind), na.rm=T)
                       plot.xts(na.locf(ind), ylim=ind_range, col=rainbow(ilen)[indNo], type="l", main="", axes=F, auto.grid=F)
                     }  
@@ -144,7 +153,7 @@ setMethod(f = "plot",
                   par(mar=c(0,0,0,0))
                   plot(1:2, 1:2, type="n", axes=F, ann=F) #only for layout
                   if (show.signals==T) {
-                    legend("left", legend=c("Signals", names(indicators)), col=c("lightblue", rainbow(ilen)), lty=rep(1,1+ilen), cex=fontsize, bty="n");
+                    legend("left", legend=c("Position", names(indicators)), col=c("lightblue", rainbow(ilen)), lty=rep(1,1+ilen), cex=fontsize, bty="n");
                   } else {
                     legend("left", legend=names(indicators), col=rainbow(ilen), lty=rep(1,ilen), cex=fontsize, bty="n");
                   }
@@ -153,8 +162,8 @@ setMethod(f = "plot",
                 # PLOT5: PERFORMANCE
                 par(mar=c(margins[1:2], 0, margins[4]))
                 # pseudo for same time domain
-                plot(prices[,i], ylim=range(performance[,i]), type="n", main="", axes=F)
-                axis(1, at=.index(prices[,i])[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
+                plot(prices_i, ylim=range(performance[,i]), type="n", main="", axes=F)
+                axis(1, at=.index(prices_i)[axTicksByTime(prices)], labels=names(axTicksByTime(prices)), las=2)
                 axis(4, at=pretty(range(performance[,i])), las=2) # right axis
                 # PERFORMANCE
                 lines(performance[,i], col="darkgray")
