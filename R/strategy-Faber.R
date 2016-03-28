@@ -26,7 +26,7 @@ strategy.faber <- function(prices, weights=NULL, indicators=NULL, parameters=lis
   if(printSteps==T) print("Periods calculated.")
 
   # STRATEGY VALUES
-  strat.vals <- Reduce(cbind, lapply(prices, rollmean, k=21*k, align="right")) # approximately 22 average trading days a month
+  strat.vals <- Reduce(cbind, lapply(prices, rollmean, k=21*k, align="right")) # approximately 21 average trading days a month
 
   if(printSteps==T) print("Strategy values set.")
 
@@ -35,6 +35,7 @@ strategy.faber <- function(prices, weights=NULL, indicators=NULL, parameters=lis
 
   # EXTRACT signals
   signals <- 1*(prices.reduced >= strat.vals)
+  signals <- na.locf(merge.xts(signals, prices[,1])[, 1:ncol(signals)])
 
   if(printSteps==T) print("Signal matrix calculated.")
 
