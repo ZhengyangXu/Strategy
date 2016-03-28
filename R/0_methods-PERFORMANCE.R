@@ -579,16 +579,22 @@ setMethod(f = "hitratio",
             logReturns <- .PricesToLogReturns(prices)[index(signals)]
             signals <- signals[index(logReturns)]
             
+            # init variable hitratios
+            hitratios <- rep(0, ncol(prices))
+            names(hitratios) <- colnames(prices)
             
             if (type == "per.trade") {
               trades <- lag(abs(diff(signals, na.pad=T))>0, k=-1) #last date of period 
               trades[nrow(trades),] <- T #last period mark
-              hitratios <- rep(0, ncol(prices))
-              names(hitratios) <- colnames(prices)
+             
               hitratioFUN <- function(price, signal, trade){
-                price <- price[index(trade[trade==T])]
+                price <- price[index(trade[trade==TRUE])]
                 ret <- .PricesToLogReturns(price)
-                hits <- as.numeric(sign(ret)) == as.numeric(sign(signal[index(ret)]))
+                # exclude cash signals
+                signal <- signal[index(ret)]
+                signal <- signal[signal!=0]
+                if (is.null(nrow(signal))) return(0)
+                hits <- as.numeric(sign(ret[index(signal)])) == as.numeric(sign(signal))
                 hitratio <- sum(hits)/length(hits)
                 return(hitratio)
               }
@@ -596,8 +602,12 @@ setMethod(f = "hitratio",
                 hitratios[i] <- hitratioFUN(prices[,i], signals[,i], trades[,i])
               }
             } else if (type == "per.signal") {
-              hits <- sign(logReturns) == sign(signals)
-              hitratios <- apply(hits, 2, sum) / nrow(hits)
+              for (i in 1:ncol(prices)) { #i<-1
+                # exclude cash signals
+                idx <- index(signals[,i]!=0)
+                hits <- sign(logReturns[idx,i]) == sign(signals[signals[idx,i]!=0,i])
+                hitratios[i] <- sum(hits) / nrow(hits)
+              }
             } 
             
             if (of=="portfolio") {
