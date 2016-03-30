@@ -19,7 +19,7 @@ strategy.kama3 <- function(prices, weights=NULL, indicators=NULL, parameters=lis
   period <- parameters[["period"]]
 
   # GET RAI
-  if( is.null(indicators) || !"rai" %in% tolower(names(indicators)) ) stop("Please provide RAI!")
+  if( is.null(indicators) || !"rai" %in% tolower(names(indicators)) ) stop("Please provide RAI-indicator!")
   rai <- indicators[["rai"]][,1]
   if (! is.xts(rai)) stop("Please provide RAI as xts!")
 
