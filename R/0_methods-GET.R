@@ -389,7 +389,7 @@ setMethod(f = "getSignals",
             if (is.null(from)) {
               from <- start(signals)
             } else {
-              from <- as.Date(signals)
+              from <- as.Date(from)
               if (from > end(signals)) {
                 stop("From date is greater than assets start!")
               }
