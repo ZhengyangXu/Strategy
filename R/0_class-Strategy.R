@@ -101,6 +101,11 @@ Strategy <- function(assets,
   if (ncol(assets) == 0) stop("Assets does not have any data column!")
   index(assets) <- as.Date(index(assets), tz="") #index as Date class
   assets <- as.xts(assets) #as.xts to prevent conversion probs
+  if (anyNA(assets)) {
+    assets <- na.omit(na.locf(assets))
+    cat("NA found in prices. Replaced with prior value. See na.locf()-documentation.", "\n")
+  }
+  
   if (printSteps==T) print("Assets checked.")
 
   # CHECK assetValueType (match.arg has its own algo to check)
@@ -173,7 +178,7 @@ Strategy <- function(assets,
   }, error = function(e) stop(paste0("Strategy ", strat, " could not be found. Consult Strategy()-documentation for available strategies.")) )
   tryCatch({
     plotFUN <- get(paste0("plot.", tolower(strat)), envir = environment(Strategy))
-  }, error = function(e) warning("No plot function defined. Generic plotting will be used. This is just an information.") )
+  }, error = function(e) cat("No plot function defined. Generic plotting will be used. This is just an information.", "\n") )
 
   if (printSteps==T) print("Strategy function(s) checked.")
   
