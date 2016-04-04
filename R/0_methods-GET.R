@@ -113,6 +113,52 @@ setMethod(f = "getWeights",
           }
 )
 
+setGeneric(name = "getTrades",
+           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=F) {
+             standardGeneric("getTrades")
+           }
+)
+
+#' @export
+#' @name getTrades
+#' @aliases getPrices
+#' @title Get trades according to the signals from the \code{Strategy}-object
+#' @description Gets the trades of an object of class \code{Strategy} that were performed within strategy calculation.
+#' @usage getTrades(object, from=NULL, until=NULL, which=NULL
+#'        , use.backtest=FALSE)
+#' @param object An object of class \code{Strategy}.
+#' @param which Names or column-number of assets that should be included. If \code{NULL}, trades for all assets are returned.
+#' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which trades shall be returned. If \code{NULL}, no restriction is made.
+#' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which trades shall be returned. If \code{NULL}, no restriction is made.
+#' @param use.backtest If set to \code{TRUE}, the trades of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.
+#' @examples
+#' ##Not run:
+#'
+#' # MA(200)-Strategy
+#' params <- list(k=200)
+#' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
+#'
+#' # Get price data from MA(200)-Strategy
+#' getTrades(myStrat.MA, from="2015-01-01", until="2015-12-31")
+#'
+#' ##End(Not run)
+setMethod(f = "getTrades",
+          signature = "Strategy",
+          definition = function(object, from, until, which, use.backtest) {
+            
+            # get all signals
+            signals <- getSignals(object, from=from, until=until, which=which, use.backtest=use.backtest)
+            
+            # get trades
+            sigdiff <- diff(signals, na.pad=T)
+            sigdiff[1,] <- 0
+            
+            
+            return(prices)
+          }
+)
+
+
 setGeneric(name = "getIndicators",
            def = function(object, from=NULL, until=NULL, which=NULL) {
              standardGeneric("getIndicators")
@@ -290,7 +336,7 @@ setMethod(f = "getParameters",
 
 # Return trading signals
 setGeneric(name = "getSignals",
-           def = function(object, use.backtest=F, which=NULL) {
+           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=F) {
              standardGeneric("getSignals")
            }
 )
@@ -300,10 +346,13 @@ setGeneric(name = "getSignals",
 #' @aliases getSignals
 #' @title Get trading signals from \code{Strategy}-object
 #' @description Gets the trading signals of an object of class \code{Strategy} that were output from strategy calculation.
-#' @usage getSignals(object, use.backtest=F, which=NULL)
+#' @usage getSignals(object, from=NULL, until=NULL, which=NULL
+#'        , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
+#' @param which Names or column-number of assets that should be returned. If \code{NULL}, all signals are returned.
+#' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which signals shall be returned. If \code{NULL}, no restriction is made.
+#' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which signals shall be returned. If \code{NULL}, no restriction is made.
 #' @param use.backtest If set to \code{TRUE}, the signals of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.
-#' @param which Names or column-number of assets that should be returned. If \code{NULL}, all prices are returned.
 #' @examples
 #' ##Not run:
 #'
@@ -318,7 +367,7 @@ setGeneric(name = "getSignals",
 #' ##End(Not run)
 setMethod(f = "getSignals",
           signature = "Strategy",
-          definition = function(object, use.backtest, which) {
+          definition = function(object, from, until, which, use.backtest) {
             if (!is.logical(use.backtest))
               stop("The backtest-argument is a boolean expression!")
             if (use.backtest==T) {
@@ -329,7 +378,26 @@ setMethod(f = "getSignals",
               signals <- object@signals
             }
             which <- validWhich(which, signals)
-            return(na.omit(signals[,which]))
+            
+            # set dates
+            if (is.null(from)) {
+              from <- start(signals)
+            } else {
+              from <- as.Date(signals)
+              if (from > end(signals)) {
+                stop("From date is greater than assets start!")
+              }
+            }
+            if (is.null(until)) {
+              until <- end(signals)
+            } else {
+              until <- as.Date(signals)
+            }
+            
+            # Date range
+            signals <- na.omit(signals[paste0(from,"::",until),which])
+            
+            return(signals)
           }
 )
 

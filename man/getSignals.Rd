@@ -5,14 +5,19 @@
 \alias{getSignals}
 \title{Get trading signals from \code{Strategy}-object}
 \usage{
-getSignals(object, use.backtest=F, which=NULL)
+getSignals(object, from=NULL, until=NULL, which=NULL
+       , use.backtest=F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
 
-\item{use.backtest}{If set to \code{TRUE}, the signals of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.}
+\item{from}{The date in character format \code{"yyyy-MM-dd"} or as date-object from which signals shall be returned. If \code{NULL}, no restriction is made.}
 
-\item{which}{Names or column-number of assets that should be returned. If \code{NULL}, all prices are returned.}
+\item{until}{The date in character format \code{"yyyy-MM-dd"} or as date-object until which signals shall be returned. If \code{NULL}, no restriction is made.}
+
+\item{which}{Names or column-number of assets that should be returned. If \code{NULL}, all signals are returned.}
+
+\item{use.backtest}{If set to \code{TRUE}, the signals of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.}
 }
 \description{
 Gets the trading signals of an object of class \code{Strategy} that were output from strategy calculation.
