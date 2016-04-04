@@ -103,7 +103,7 @@ Strategy <- function(assets,
   assets <- as.xts(assets) #as.xts to prevent conversion probs
   if (anyNA(assets)) {
     assets <- na.omit(na.locf(assets))
-    message("NA found in prices. Replaced with prior and cut if within first value(s). See na.locf() and na.omit() documentation.", "\n")
+    message("NA found in prices. Replaced with prior and cut if within first value(s). See na.locf() and na.omit() documentation.")
   }
   
   if (printSteps==T) print("Assets checked.")
@@ -178,7 +178,7 @@ Strategy <- function(assets,
   }, error = function(e) stop(paste0("Strategy ", strat, " could not be found. Consult Strategy()-documentation for available strategies.")) )
   tryCatch({
     plotFUN <- get(paste0("plot.", tolower(strat)), envir = environment(Strategy))
-  }, error = function(e) message("No plot function defined. Generic plotting will be used. This is just an information.", "\n") )
+  }, error = function(e) message("No plot function defined. Generic plotting will be used. This is just an information.") )
 
   if (printSteps==T) print("Strategy function(s) checked.")
   
