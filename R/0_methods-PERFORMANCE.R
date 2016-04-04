@@ -109,9 +109,7 @@ setMethod(f = "performance",
               costs.fix <- costs$fix
               costs.rel <- costs$relative
               volume <- object@volume
-              trades <- abs(diff(signals, na.pad=T))
-              trades[1,] <- 0
-              coredata(trades) <- pmin(coredata(trades),2)  #max 2 trades
+              trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
               # add relative costs
               ret <- ret - sign(signals) * trades * costs.rel/100
               perf1 <- cumprod(ret*signals + 1)*volume
