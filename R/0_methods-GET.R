@@ -149,12 +149,18 @@ setMethod(f = "getTrades",
             # get all signals
             signals <- getSignals(object, from=from, until=until, which=which, use.backtest=use.backtest)
             
-            # get trades
-            sigdiff <- diff(signals, na.pad=T)
+            # calculate trades based on differences of trading signals
+            sigdiff <- abs(diff(signals, na.pad=T))
             sigdiff[1,] <- 0
-            
-            
-            return(prices)
+            longshort <- abs(diff(sign(signals), na.pad=T))
+            longshort[1,] <- 0
+            trades <- sigdiff*0
+            # 1 trades made (no long/short change)
+            coredata(trades)[which(sigdiff>0,arr.ind=T)] <- 1
+            # 2 trades made (long/short change)
+            coredata(trades)[which(longshort==2,arr.ind=T)] <- 2
+ 
+            return(trades)
           }
 )
 
