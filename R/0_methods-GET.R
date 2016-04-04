@@ -397,7 +397,7 @@ setMethod(f = "getSignals",
             if (is.null(until)) {
               until <- end(signals)
             } else {
-              until <- as.Date(signals)
+              until <- as.Date(until)
             }
             
             # Date range
