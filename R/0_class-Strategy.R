@@ -83,7 +83,7 @@ setClass(Class="Strategy",
 #'
 #' ##End (Not run)
 Strategy <- function(assets,
-                     strat,
+                     strat = "buyhold",
                      assetValueType = c("price", "logReturn"),
                      weights = NULL,
                      indicators = list(),
