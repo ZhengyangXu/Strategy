@@ -50,8 +50,8 @@ setMethod(f = "performance",
               stop("The include.costs-argument must be a boolean!")
             
             # GET data
-            signals <- getSignals(object, use.backtest, which=which)
-            prices <- getPrices(object, which=colnames(signals))
+            signals <- getSignals(object, from=from, until=until, which=which, use.backtest=use.backtest)
+            prices <- getPrices(object, from=from, until=until, which=colnames(signals))
             
             
             # SET start date (performance=1)
@@ -66,27 +66,27 @@ setMethod(f = "performance",
             
             # VALIDATE Date Range Input!
             # from
-            if (!is.null(from)) {
-              # if from is not a valid date, this will throw an error
-              from <- as.Date(from)
-              # do not start before price data
-              if (from < start(prices))
-                from <- start(prices)
-            } else {
-              from <- from.start
-            }
-            # until
-            if (!is.null(until)) {
-              # if until is not a valid date, this will throw an error
-              until <- as.Date(until)
-            } else {
-              until <- end(signals)
-            }
-            # range validation
-            if (from > until)
-              stop("From date cannot be greater than until date!")
+            # if (!is.null(from)) {
+            #   # if from is not a valid date, this will throw an error
+            #   from <- as.Date(from)
+            #   # do not start before price data
+            #   if (from < start(prices))
+            #     from <- start(prices)
+            # } else {
+            #   from <- from.start
+            # }
+            # # until
+            # if (!is.null(until)) {
+            #   # if until is not a valid date, this will throw an error
+            #   until <- as.Date(until)
+            # } else {
+            #   until <- end(signals)
+            # }
+            # # range validation
+            # if (from > until)
+            #   stop("From date cannot be greater than until date!")
             
-            logReturns <- .PricesToLogReturns(prices[paste0(from,"::",until),])
+            logReturns <- .PricesToLogReturns(prices)
             
             # add signals first row = 0 to let performance start at 1
             # in case logReturns start equal to signals, this is redundant
