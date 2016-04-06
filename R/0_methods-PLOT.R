@@ -50,7 +50,6 @@ setMethod(f = "plot",
               filters <- lapply(getFilters(object, which=which.filters), function(x) x[paste0(start(prices),"::",end(prices)), colnames(prices)])
               
               indicators <- lapply(getIndicators(object, which=which.indicators), function(x) x[paste0(start(prices),"::",end(prices))])
-              signals <- getSignals(object, which=which)[paste0(start(prices),"::",end(prices))]
               performance <- performance(object, of="assets", from=start(prices), until=end(prices), which=which, include.costs=include.costs)
               
               # lengths
@@ -67,8 +66,10 @@ setMethod(f = "plot",
               }
               
               if (show.signals==T) {
-                trades <- lag(abs(diff(signals, na.pad=T))>0, k=-1) #last date of period 
-                trades[nrow(trades),] <- T #last period mark
+                signals <- getSignals(object, which=which, from=start(prices), until=end(prices))
+                trades <- sign(abs(getTrades(object, which=which, from=start(prices), until=end(prices))))
+                trades[1,] <- 1 # to ensure plotting
+                trades[nrow(trades),] <- 1 # to ensure plotting
               }
             
               # PLOT main
@@ -131,10 +132,16 @@ setMethod(f = "plot",
                   # signals
                   if (show.signals==T) {
                     par(new=T)
-                    signals_i <- na.fill(na.locf(merge.xts(signals[,i], prices_i)[,1]), 0) # resolve time domain issue
-                    signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
+                    trades_i <- trades[trades[,i]!=0,i]
+                    signals_i <- signals[index(trades_i),i]
+                    #signals_i <- na.fill(na.locf(merge.xts(signals[,i], prices_i)[,1]), 0) # resolve time domain issue
+                    #signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
                     # plot
-                    barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
+                    cols <- signals_i*NA
+                    cols[signals_i>0] <- "green"
+                    cols[signals_i<0] <- "red"
+                    rect(xleft = .index(signals_i), ybottom = rep(0,nrow(signals_i)), xright = c(.index(signals_i[2:nrow(signals_i),]), .index(prices_i[nrow(prices),])), ytop = signals_i, col = cols, border = NA)
+                    #barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
                   }
                   abline(h=0, col="gray")
                   
