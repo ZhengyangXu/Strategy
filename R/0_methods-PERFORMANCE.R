@@ -351,7 +351,6 @@ setMethod(f = "VaR",
               scaling.periods <- .annFactor(L)
             
             # validations
-            print(scaling.periods)
             if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
             if (length(scaling.periods) != ncol(L)) stop("Please provide scaling periods as numeric vector with length 1 or the same number of portfolio assets.")
             
