@@ -682,9 +682,15 @@ setMethod(f = "performanceIndicators",
             
             # GET PERFORMANCES
             logReturns <- performance(object, of=of, from=from, until=until, which=which, use.backtest=use.backtest, include.costs=include.costs, type="logReturns")
+            # annualization factors if needed 
+            if (is.null(scaling.periods))
+              scaling.periods <- annFactor(logReturns)
+            # annualized returns
             meanReturns <- exp(apply(logReturns, 2, mean) * scaling.periods)  - 1
             returns <- exp(logReturns) - 1
+            # annualized vola
             vola <- apply(returns, 2, sd) * sqrt(scaling.periods)
+            # annualized sharpe
             sharpe <- sharpe(object, of=of, from=from, until=until, which=which, scaling.periods=scaling.periods, include.costs=include.costs, use.backtest=use.backtest)
             # QRM
             mdd <- sapply(MDD(object, of=of, type="relative", from=from, until=until, which=which, include.costs=include.costs, use.backtest=use.backtest), function(x) x[["mdd"]])
@@ -697,13 +703,7 @@ setMethod(f = "performanceIndicators",
             which.out <- validWhich(which, prices)
             
             # TRADES
-            signals <- getSignals(object, use.backtest)[paste0(start(returns),"::",end(returns)),which.out]
-            trades <- abs(diff(signals, lag=1))
-            trades[] <- pmin(coredata(trades), 1) # max from short to long /vice verca. to trade a leveraged position does not count twice
-            trades[1,] <- 0
-            # change from long to short count twice
-            trades2 <- abs(diff(sign(signals), lag=1)) == 2
-            coredata(trades)[trades2] <- 2
+            trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
             
             if (of == "portfolio") {
               tradesSum <- sum(trades)
@@ -714,11 +714,11 @@ setMethod(f = "performanceIndicators",
             
             # INITIALIE performance matrice
             performance_mat <- matrix(ncol=ncol(logReturns), nrow=8)
-            rownames(performance_mat) <- c("Scaled Returns", "Scaled Vola", "Scaled Sharpe", "MDD", "Scaled VaR", "Scaled ES", "Hit Ratio", "Trades")
+            rownames(performance_mat) <- c("Ann. Returns", "Ann. Vola", "Ann. Sharpe", "MDD", "Ann. VaR", "Ann. ES", "Hit Ratio", "Trades")
             colnames(performance_mat) <- colnames(logReturns)
             
             performance_mat[] <- rbind(meanReturns, vola, sharpe, mdd, VaR, ES, hitratio, tradesSum)
-            attr(performance_mat, "Scaling Periods") <- scaling.periods
+            attr(performance_mat, "Ann. Scaling") <- scaling.periods
             
             return(performance_mat)
           }
@@ -777,6 +777,8 @@ setMethod(f = "compare",
             args <- list(...)
             
             # CHECK scaling.periods
+            if (is.null(scaling.periods))
+              scaling.periods <- Reduce(c, lapply(args, function(obj) min(annFactor(getPrices(obj)))))
             if (!is.numeric(scaling.periods) || is.null(scaling.periods))
               stop("Please provide scaling.periods as numeric!")
             if (length(scaling.periods) > 1) {
