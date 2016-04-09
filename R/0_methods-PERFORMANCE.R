@@ -296,8 +296,10 @@ setGeneric(name = "VaR",
 #' @aliases VaR
 #' @title Value at Risk
 #' @description Value at Risk of the assets or portfolio of an object of class \code{Strategy}.
-#' @usage VaR(object, alpha=0.05, period="day", of="portfolio"
-#'      , which=NULL, from=NULL, until=NULL
+#' @usage VaR(object, alpha=0.05, V=1
+#'      , type="deterministic", method="full"
+#'      , of="portfolio", from=NULL, until=NULL
+#'      , which=NULL, scaling.periods=NULL
 #'      , include.weights=T, include.costs=T
 #'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
@@ -350,7 +352,7 @@ setMethod(f = "VaR",
             
             # validations
             if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
-            if (length(scaling.periods) != ncol(L)) stop("Please provide scaling periods as numeric vector with length 1 or number of portfolio assets.")
+            if (length(scaling.periods) != ncol(L)) stop("Please provide scaling periods as numeric vector with length 1 or the same number of portfolio assets.")
             
             if (type=="historical") {
               # deterministic VaR calculation
@@ -680,16 +682,6 @@ setMethod(f = "performanceIndicators",
             
             of <- match.arg(of)
             
-            # GET PERFORMANCES
-            logReturns <- performance(object, of=of, from=from, until=until, which=which, use.backtest=use.backtest, include.costs=include.costs, type="logReturns")
-            # annualization factors if needed 
-            if (is.null(scaling.periods))
-              scaling.periods <- annFactor(logReturns)
-            # annualized returns
-            meanReturns <- exp(apply(logReturns, 2, mean) * scaling.periods)  - 1
-            returns <- exp(logReturns) - 1
-            # annualized vola
-            vola <- apply(returns, 2, sd) * sqrt(scaling.periods)
             # annualized sharpe
             sharpe <- sharpe(object, of=of, from=from, until=until, which=which, scaling.periods=scaling.periods, include.costs=include.costs, use.backtest=use.backtest)
             # QRM
@@ -711,6 +703,17 @@ setMethod(f = "performanceIndicators",
             } else {
               tradesSum <- apply(trades, 2, sum)
             }
+            
+            # returns
+            logReturns <- performance(object, of=of, from=from, until=until, which=which, use.backtest=use.backtest, include.costs=include.costs, type="logReturns")
+            # annualization factors if needed 
+            if (is.null(scaling.periods))
+              scaling.periods <- annFactor(logReturns)
+            # annualized returns
+            meanReturns <- exp(apply(logReturns, 2, mean) * scaling.periods)  - 1
+            returns <- exp(logReturns) - 1
+            # annualized vola
+            vola <- apply(returns, 2, sd) * sqrt(scaling.periods)
             
             # INITIALIE performance matrice
             performance_mat <- matrix(ncol=ncol(logReturns), nrow=8)

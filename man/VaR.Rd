@@ -5,8 +5,10 @@
 \alias{VaR}
 \title{Value at Risk}
 \usage{
-VaR(object, alpha=0.05, period="day", of="portfolio"
-     , which=NULL, from=NULL, until=NULL
+VaR(object, alpha=0.05, V=1
+     , type="deterministic", method="full"
+     , of="portfolio", from=NULL, until=NULL
+     , which=NULL, scaling.periods=NULL
      , include.weights=T, include.costs=T
      , use.backtest=F)
 }
