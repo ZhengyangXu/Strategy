@@ -131,7 +131,7 @@ validWhich <- function(which, data) {
 .annFactor <- function(data) {
   if (!is.xts(data)) stop("Please provide data as xts!")
   freq <- periodicity(data[,1])$scale
-  scalevec <- rep(1, ncol(assets))
+  scalevec <- rep(1, ncol(data))
   switch(freq, 
          minute = {
            stop("Data periodicity too high")
@@ -148,7 +148,7 @@ validWhich <- function(which, data) {
          }, yearly = {
            scale = 1
          })
-  scalevec <- rep(scale, ncol(assets))
+  scalevec <- rep(scale, ncol(data))
   return(scalevec)
 }
 

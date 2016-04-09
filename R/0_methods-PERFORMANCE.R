@@ -199,7 +199,7 @@ setMethod(f = "sharpe",
             
             # get annualization factors if needed
             if (is.null(scaling.periods))
-              scaling.periods <- annFactor(logReturns)
+              scaling.periods <- .annFactor(logReturns)
             
             # correction term neglected / + 1/2* vapply(d, sd, 0)^2
             sharpe <- ( exp( vapply(logDiff, mean, 0)*scaling.periods ) - 1 )/ ( vapply(returns, sd, 0) * sqrt(scaling.periods) )
@@ -435,7 +435,7 @@ setMethod(f = "ES",
             
             # annualization factors if needed
             if (is.null(scaling.periods))
-              scaling.periods <- annFactor(L)
+              scaling.periods <- .annFactor(L)
             
             # validations
             if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
@@ -713,7 +713,7 @@ setMethod(f = "performanceIndicators",
             logReturns <- performance(object, of=of, from=from, until=until, which=which, use.backtest=use.backtest, include.costs=include.costs, type="logReturns")
             # annualization factors if needed 
             if (is.null(scaling.periods))
-              scaling.periods <- annFactor(logReturns)
+              scaling.periods <- .annFactor(logReturns)
             # annualized returns
             meanReturns <- exp(apply(logReturns, 2, mean) * scaling.periods)  - 1
             returns <- exp(logReturns) - 1
@@ -786,7 +786,7 @@ setMethod(f = "compare",
             
             # CHECK scaling.periods
             if (is.null(scaling.periods))
-              scaling.periods <- Reduce(c, lapply(args, function(obj) min(annFactor(getPrices(obj)))))
+              scaling.periods <- Reduce(c, lapply(args, function(obj) min(.annFactor(getPrices(obj)))))
             if (!is.numeric(scaling.periods) || is.null(scaling.periods))
               stop("Please provide scaling.periods as numeric!")
             if (length(scaling.periods) > 1) {
