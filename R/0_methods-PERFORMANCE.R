@@ -345,10 +345,10 @@ setMethod(f = "VaR",
             
             # get loss time series
             L <- loss(object, V=V, method=method, of=of, from=from, until=until, which=which, include.weights=include.weights, include.costs=include.costs, use.backtest=use.backtest)
-            print(head(L))
+
             # annualization factors if needed
             if (is.null(scaling.periods))
-              scaling.periods <- annFactor(L)
+              scaling.periods <- .annFactor(L)
             
             # validations
             print(scaling.periods)

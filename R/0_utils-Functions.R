@@ -97,30 +97,7 @@ validWhich <- function(which, data) {
   return(which.out)
 }
 
-# Standard annualization factors
-annFactor <- function(data) {
-  if (!is.xts(data)) stop("Please provide data as xts!")
-  freq <- periodicity(data[,1])$scale
-  scalevec <- rep(1, ncol(assets))
-  switch(freq, 
-       minute = {
-      stop("Data periodicity too high")
-    }, hourly = {
-      stop("Data periodicity too high")
-    }, daily = {
-      scale = 252
-    }, weekly = {
-      scale = 52
-    }, monthly = {
-      scale = 12
-    }, quarterly = {
-      scale = 4
-    }, yearly = {
-      scale = 1
-  })
-  scalevec <- rep(scale, ncol(assets))
-  return(scalevec)
-}
+
 
 # ---HIDDEN -------------------------------------------------------------------
 # GET PRICES from Returns
@@ -150,15 +127,36 @@ annFactor <- function(data) {
   return(data)
 }
 
+# Standard annualization factors
+.annFactor <- function(data) {
+  if (!is.xts(data)) stop("Please provide data as xts!")
+  freq <- periodicity(data[,1])$scale
+  scalevec <- rep(1, ncol(assets))
+  switch(freq, 
+         minute = {
+           stop("Data periodicity too high")
+         }, hourly = {
+           stop("Data periodicity too high")
+         }, daily = {
+           scale = 252
+         }, weekly = {
+           scale = 52
+         }, monthly = {
+           scale = 12
+         }, quarterly = {
+           scale = 4
+         }, yearly = {
+           scale = 1
+         })
+  scalevec <- rep(scale, ncol(assets))
+  return(scalevec)
+}
+
 
 # Check if submitted parameters match the required names
 
 # Standard declare parameters function - new Strategy --> edit default parameters
 .stratFUN.declareParams <- function(defaultParams, parameters = NULL, printWarnings=T) {
-
-  # -----------------------
-  # LATER: CHECK DATATYPES!
-  # -----------------------
 
   # IF no parameters given return directly defaults
   if (is.null(parameters)) return(defaultParams)
@@ -195,15 +193,13 @@ annFactor <- function(data) {
 
 
 
-# LATEX OUTPUT
-# -----------------------------------------------------------------------------
+# LATEX OUTPUT -------------------------------------------------------------------
 
 # used in bold headings
 bold <- function(x) {paste('{\\textbf{',x,'}}', sep ='')}
 
 
-# BACKTESTING required FUNS
-# -----------------------------------------------------------------------------
+# BACKTESTING required FUNS ----------------------------------------------------------------------
 
 # Retrieve nb of periods until horizon based on
 # frequency of data (xts object))
