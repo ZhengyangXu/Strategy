@@ -147,7 +147,7 @@ setMethod(f = "performance",
 
 # Sharpe Ratio calculation
 setGeneric(name = "sharpe",
-           def = function(object, rf=0, of="portfolio", from=NULL, until=NULL, which=NULL, scaling.periods=1, include.costs=T, use.backtest=F) {
+           def = function(object, rf=0, of="portfolio", from=NULL, until=NULL, which=NULL, scaling.periods=NULL, include.costs=T, use.backtest=F) {
              standardGeneric("sharpe")
            }
 )
@@ -159,7 +159,7 @@ setGeneric(name = "sharpe",
 #' @description Get the sharpe ratio of the performance of an object of class \code{Strategy}.
 #' @usage sharpe(object, rf=0, of="portfolio"
 #'      , which=NULL, from=NULL, until=NULL
-#'      , scaling.periods=1, include.costs=T
+#'      , scaling.periods=NULL, include.costs=T
 #'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param rf Risk free rate in decimal, e.g. \code{rf=0.01} equals \code{1 percent}.
@@ -169,7 +169,7 @@ setGeneric(name = "sharpe",
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which performance shall be considered. If \code{NULL}, no restriction is made.
 #' @param include.costs If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.
 #' @param use.backtest If \code{TRUE}, the performance of the backtesting output is considered for sharpe ratio calculation. If \code{FALSE}, the performance of the initial strategy execution are used.
-#' @param scaling.periods Vector with annualization factors for sharpe ratio calculation. E.g. if data is monthly, scaling.periods is to be set to 12 for the respective.
+#' @param scaling.periods Vector with annualization factors for sharpe ratio calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.
 #' @examples
 #' ## Not run:
 #'
@@ -190,11 +190,17 @@ setMethod(f = "sharpe",
             of <- match.arg(of)
             if (!is.numeric(rf))
               stop("Please provide risk free return as numeric!")
-            if (!is.numeric(scaling.periods))
+            if (!is.null(scaling.periods) && !is.numeric(scaling.periods))
               stop("Please provide scaling periods as numeric!")
+            
             logReturns <- performance(object, of=of, from=from, until=until, which=which, type="logReturns", include.costs=include.costs, use.backtest=use.backtest)
             logDiff <- logReturns - log(1+rf)
             returns <- exp(logReturns) - 1
+            
+            # get annualization factors if needed
+            if (is.null(scaling.periods))
+              scaling.periods <- annFactor(logReturns)
+            
             # correction term neglected / + 1/2* vapply(d, sd, 0)^2
             sharpe <- ( exp( vapply(logDiff, mean, 0)*scaling.periods ) - 1 )/ ( vapply(returns, sd, 0) * sqrt(scaling.periods) )
             return(sharpe)
@@ -280,7 +286,7 @@ setMethod(f = "loss",
 setGeneric(name = "VaR",
            def = function(object, alpha=0.05, V=1, type="deterministic", method="full", of="portfolio"
                           , from=NULL, until=NULL, which=NULL
-                          , scaling.periods=1, include.weights=T, include.costs=T, use.backtest=F) {
+                          , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("VaR")
            }
 )
@@ -303,7 +309,7 @@ setGeneric(name = "VaR",
 #' @param of VaR to be calculated for assets separately or the portfolio.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which losses shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which losses shall be considered. If \code{NULL}, no restriction is made.
-#' @param scaling.periods Vector with annualization factors for calculation. E.g. if data is monthly, scaling.periods is to be set to 12 to get the annualized value.
+#' @param scaling.periods Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.
 #' @param include.weights Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered. 
 #' @param include.costs If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.
 #' @param use.backtest If \code{TRUE}, the performance of the backtesting output is considered for VaR calculation. If \code{FALSE}, the performance of the initial strategy execution are used.
@@ -332,11 +338,15 @@ setMethod(f = "VaR",
             
             if (!is.numeric(alpha) || alpha > 1 || alpha < 0)
               stop("Please provide alpha as numerical between 0 and 1!")
-            if (!is.numeric(scaling.periods))
+            if (!is.null(scaling.periods) && !is.numeric(scaling.periods))
               stop("Please provide scaling periods as numeric!")
             
             # get loss time series
             L <- loss(object, V=V, method=method, of=of, from=from, until=until, which=which, include.weights=include.weights, include.costs=include.costs, use.backtest=use.backtest)
+            
+            # annualization factors if needed
+            if (is.null(scaling.periods))
+              scaling.periods <- annFactor(L)
             
             # validations
             if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
@@ -363,7 +373,7 @@ setGeneric(name = "ES",
            def = function(object, alpha=0.05, V=1
                           , type="deterministic", method="full", of="portfolio"
                           , from=NULL, until=NULL, which=NULL
-                          , scaling.periods=1, include.weights=T, include.costs=T, use.backtest=F) {
+                          , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("ES")
            }
 )
@@ -387,7 +397,7 @@ setGeneric(name = "ES",
 #' @param which Names or number of assets that should be included in calculation.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which losses shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which losses shall be considered. If \code{NULL}, no restriction is made.
-#' @param scaling.periods Vector with annualization factors for calculation. E.g. if data is monthly, scaling.periods is to be set to 12 to get the annualized value.
+#' @param scaling.periods Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.
 #' @param include.weights Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered. 
 #' @param use.backtest If \code{TRUE}, the performance of the backtesting output is considered for VaR calculation. If \code{FALSE}, the performance of the initial strategy execution are used.
 #' @examples
@@ -415,10 +425,14 @@ setMethod(f = "ES",
             
             if (!is.numeric(alpha) || !all(alpha < 1) || !all(alpha > 0))
               stop("Please provide alpha as numeric (vector) between 0 and 1!")
-            if (!is.numeric(scaling.periods))
+            if (!is.null(scaling.periods) && !is.numeric(scaling.periods))
               stop("Please provide scaling periods as numeric!")
             
             L <- loss(object, V=V, method=method, of=of, from=from, until=until, which=which, include.weights=include.weights, include.costs=include.costs, use.backtest=use.backtest)
+            
+            # annualization factors if needed
+            if (is.null(scaling.periods))
+              scaling.periods <- annFactor(L)
             
             # validations
             if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
@@ -624,7 +638,7 @@ setMethod(f = "hitratio",
 # Returns a list of different performance measurements of the strategy.
 setGeneric(name = "performanceIndicators",
            def = function(object, of="portfolio", from=NULL, until=NULL, which=NULL, alpha=0.05, V=1
-                          , scaling.periods=1, include.weights=T, include.costs=T, use.backtest=F) {
+                          , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("performanceIndicators")
            }
 )
@@ -645,7 +659,7 @@ setGeneric(name = "performanceIndicators",
 #' @param of Indicators to be calculated for assets separately or the portfolio.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which performance shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which performance shall be considered. If \code{NULL}, no restriction is made.
-#' @param scaling.periods Vector with annualization factors for calculation. E.g. if data is monthly, scaling.periods is to be set to 12 to get the annualized value.
+#' @param scaling.periods Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.
 #' @param include.weights Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered. 
 #' @param include.costs If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.
 #' @param use.backtest If set to \code{TRUE}, the signals from the backtesting output are considered for maximum drawdown calculation. If \code{FALSE}, the signals from the initial strategy execution are used.
@@ -720,7 +734,7 @@ setMethod(f = "performanceIndicators",
 # use.backtest: use backtest performance?
 setGeneric(name = "compare",
            signature = "...",
-           def = function(..., from=NULL, until=NULL, which=NULL, scaling.periods=1, include.costs=T, use.backtest=F, include.params=F) {
+           def = function(..., from=NULL, until=NULL, which=NULL, scaling.periods=NULL, include.costs=T, use.backtest=F, include.params=F) {
              standardGeneric("compare")
            }
 )
@@ -738,7 +752,7 @@ setGeneric(name = "compare",
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which performance shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which performance shall be considered. If \code{NULL}, no restriction is made.
 #' @param use.backtest If \code{TRUE}, the performance of the backtesting output is considered for performance indicator calculation. If \code{FALSE}, the performance of the initial strategy execution are used.
-#' @param scaling.periods Vector with annualization factors for calculation. E.g. if data is monthly, scaling.periods is to be set to 12 for the respective.
+#' @param scaling.periods Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.
 #' @param include.costs If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.
 #' @param include.params If \code{TRUE} the parameters of the strategies are included in their names. E.g. \code{MA(k=200)} instead of \code{MA} as strategy name for moving average.
 #' @examples

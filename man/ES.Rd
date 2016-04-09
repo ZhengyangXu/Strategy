@@ -30,7 +30,7 @@ ES(object, alpha=0.05, V=1
 
 \item{which}{Names or number of assets that should be included in calculation.}
 
-\item{scaling.periods}{Vector with annualization factors for calculation. E.g. if data is monthly, scaling.periods is to be set to 12 to get the annualized value.}
+\item{scaling.periods}{Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.}
 
 \item{include.weights}{Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered.}
 

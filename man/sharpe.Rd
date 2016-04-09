@@ -7,7 +7,7 @@
 \usage{
 sharpe(object, rf=0, of="portfolio"
      , which=NULL, from=NULL, until=NULL
-     , scaling.periods=1, include.costs=T
+     , scaling.periods=NULL, include.costs=T
      , use.backtest=F)
 }
 \arguments{
@@ -23,7 +23,7 @@ sharpe(object, rf=0, of="portfolio"
 
 \item{which}{Names or number of assets that should be included in calculation.}
 
-\item{scaling.periods}{Vector with annualization factors for sharpe ratio calculation. E.g. if data is monthly, scaling.periods is to be set to 12 for the respective.}
+\item{scaling.periods}{Vector with annualization factors for sharpe ratio calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.}
 
 \item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
 
