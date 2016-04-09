@@ -284,7 +284,7 @@ setMethod(f = "loss",
 
 # Value at Risk calculation
 setGeneric(name = "VaR",
-           def = function(object, alpha=0.05, V=1, type="deterministic", method="full", of="portfolio"
+           def = function(object, alpha=0.05, V=1, type="historical", method="full", of="portfolio"
                           , from=NULL, until=NULL, which=NULL
                           , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("VaR")
@@ -297,7 +297,7 @@ setGeneric(name = "VaR",
 #' @title Value at Risk
 #' @description Value at Risk of the assets or portfolio of an object of class \code{Strategy}.
 #' @usage VaR(object, alpha=0.05, V=1
-#'      , type="deterministic", method="full"
+#'      , type="historical", method="full"
 #'      , of="portfolio", from=NULL, until=NULL
 #'      , which=NULL, scaling.periods=NULL
 #'      , include.weights=T, include.costs=T
@@ -345,7 +345,7 @@ setMethod(f = "VaR",
             
             # get loss time series
             L <- loss(object, V=V, method=method, of=of, from=from, until=until, which=which, include.weights=include.weights, include.costs=include.costs, use.backtest=use.backtest)
-            
+            print(head(L))
             # annualization factors if needed
             if (is.null(scaling.periods))
               scaling.periods <- annFactor(L)

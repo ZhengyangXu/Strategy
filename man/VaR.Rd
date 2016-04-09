@@ -6,7 +6,7 @@
 \title{Value at Risk}
 \usage{
 VaR(object, alpha=0.05, V=1
-     , type="deterministic", method="full"
+     , type="historical", method="full"
      , of="portfolio", from=NULL, until=NULL
      , which=NULL, scaling.periods=NULL
      , include.weights=T, include.costs=T
