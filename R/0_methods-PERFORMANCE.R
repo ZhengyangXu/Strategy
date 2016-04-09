@@ -388,7 +388,7 @@ setGeneric(name = "ES",
 #' @usage ES(object, alpha=0.05, V=1
 #'      , type="deterministic", method="full", of="portfolio"
 #'      , from=NULL, until=NULL, which=NULL
-#'      , scaling.periods=1, include.weights=T
+#'      , scaling.periods=NULL, include.weights=T
 #'      , include.costs=T, use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
@@ -584,24 +584,23 @@ setGeneric(name = "hitratio",
 #' ## End(Not run)
 setMethod(f = "hitratio",
           signature = "Strategy",
-          definition = function(object, of=c("assets", "portfolio"), from, until, which, type=c("per.signal", "per.trade"), include.costs, use.backtest) {
+          definition = function(object, of=c("portfolio", "assets"), from, until, which, type=c("per.signal", "per.trade"), include.costs, use.backtest) {
             of <- match.arg(of)
             type <- match.arg(type)
             
             # performance to include costs, treated as price series
-            prices <- performance(object, of=of, from=from, until=until, which=which, include.costs=include.costs, use.backtest=use.backtest)
+            prices <- performance(object, of="assets", from=from, until=until, which=which, include.costs=include.costs, use.backtest=use.backtest)
             #prices <- getPrices(object, from=from, until=until, which=which)
-            signals <- getSignals(object, which=which, use.backtest=use.backtest)[paste0(from,"::",until)]
+            signals <- getSignals(object, which=which, from=from, until=until, use.backtest=use.backtest)
             
-            # init variable hitratios
-            hitratios <- rep(0, ncol(prices))
-            names(hitratios) <- colnames(prices)
+            # init variable hits
+            hits <- list()
             
             if (type == "per.trade") {
               trades <- lag(abs(diff(signals, na.pad=T))>0, k=-1) #last date of period 
               trades[nrow(trades),] <- T #last period mark
-             
-              hitratioFUN <- function(price, signal, trade){
+              
+              hitFUN <- function(price, signal, trade){
                 price <- price[index(trade[trade==TRUE])]
                 ret <- .PricesToLogReturns(price)
                 # exclude cash signals
@@ -609,28 +608,32 @@ setMethod(f = "hitratio",
                 signal <- signal[signal!=0]
                 if (is.null(nrow(signal))) return(0)
                 hits <- as.numeric(sign(ret[index(signal)])) == as.numeric(sign(signal))
-                hitratio <- sum(hits)/length(hits)
-                return(hitratio)
+                return(hits)
               }
               for (i in 1:ncol(prices)) { #i<-1
-                hitratios[i] <- hitratioFUN(prices[,i], signals[,i], trades[,i])
+                hits[[i]] <- hitFUN(prices[,i], signals[,i], trades[,i])
               }
+
             } else if (type == "per.signal") {
               logReturns <- .PricesToLogReturns(prices)[index(signals)]
               signals <- signals[index(logReturns)]
               for (i in 1:ncol(prices)) { #i<-1
                 # exclude cash signals
                 idx <- index(signals[,i]!=0)
-                hits <- sign(logReturns[idx,i]) == sign(signals[signals[idx,i]!=0,i])
-                hitratios[i] <- sum(hits) / nrow(hits)
+                hits[[i]] <- sign(logReturns[idx,i]) == sign(signals[signals[idx,i]!=0,i])
               }
             } 
             
             if (of=="portfolio") {
-              weights <- getWeights(object, from=from, until=until, which=which)
-              weights <- apply(weights[index(signals)], 2, mean)
-              hitratios <- as.vector(hitratios %*% (weights/sum(weights)))
+              hitlen <- Reduce(sum, lapply(hits, function(hit) length(hit)))
+              nhits <- Reduce(sum, lapply(hits, function(hit) sum(hit)))
+              hitratios <- nhits/hitlen
               names(hitratios) <- "Portfolio"
+            } else {
+              hitlen <- Reduce(c, lapply(hits, function(hit) length(hit)))
+              nhits <- Reduce(c, lapply(hits, function(hit) sum(hit)))
+              hitratios <- nhits/hitlen
+              names(hitratios) <- colnames(prices)
             }
 
             return(hitratios)
@@ -651,9 +654,10 @@ setGeneric(name = "performanceIndicators",
 #' @title Strategy Performance Indicators
 #' @description Get a list of the performance indicators of an object of class \code{Strategy}.
 #' @usage performanceIndicators(object, of="portfolio"
-#'      , which=NULL, from=NULL, until=NULL
-#'      , alpha=0.05, V=1, include.weights=T, include.costs=T
-#'      , use.backtest=F, scaling.periods=1)
+#'      , from=NULL, until=NULL, which=NULL
+#'      , alpha=0.05, V=1, scaling.periods=NULL
+#'      , include.weights=T, include.costs=T
+#'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
@@ -748,7 +752,7 @@ setGeneric(name = "compare",
 #' @title Compare performance of \code{Strategy}-objects.
 #' @description Compare the portfoio performance indicators of an arbitrary number of objects of class \code{Strategy}.
 #' @usage compare(..., from=NULL, until=NULL, which=NULL
-#'      , scaling.periods=1, include.costs=T
+#'      , scaling.periods=NULL, include.costs=T
 #'      , use.backtest=F, include.params=F)
 #' @param ... Objects of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.

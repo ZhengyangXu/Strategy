@@ -6,9 +6,10 @@
 \title{Strategy Performance Indicators}
 \usage{
 performanceIndicators(object, of="portfolio"
-     , which=NULL, from=NULL, until=NULL
-     , alpha=0.05, V=1, include.weights=T, include.costs=T
-     , use.backtest=F, scaling.periods=1)
+     , from=NULL, until=NULL, which=NULL
+     , alpha=0.05, V=1, scaling.periods=NULL
+     , include.weights=T, include.costs=T
+     , use.backtest=F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

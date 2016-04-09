@@ -8,7 +8,7 @@
 ES(object, alpha=0.05, V=1
      , type="deterministic", method="full", of="portfolio"
      , from=NULL, until=NULL, which=NULL
-     , scaling.periods=1, include.weights=T
+     , scaling.periods=NULL, include.weights=T
      , include.costs=T, use.backtest=F)
 }
 \arguments{

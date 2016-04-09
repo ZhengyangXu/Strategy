@@ -6,7 +6,7 @@
 \title{Compare performance of \code{Strategy}-objects.}
 \usage{
 compare(..., from=NULL, until=NULL, which=NULL
-     , scaling.periods=1, include.costs=T
+     , scaling.periods=NULL, include.costs=T
      , use.backtest=F, include.params=F)
 }
 \arguments{
