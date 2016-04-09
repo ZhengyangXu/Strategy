@@ -106,10 +106,10 @@ Strategy <- function(assets,
     message("NA found in prices. Replaced with prior and cut if within first value(s). See na.locf() and na.omit() documentation.")
   }
   
-  if (printSteps==T) print("Assets checked.")
-
   # CHECK assetValueType (match.arg has its own algo to check)
   assetValueType <- match.arg(assetValueType)
+  
+  if (printSteps==T) print("Assets checked.")
 
   # CHECK Asset Weights
   if (is.null(weights)) weights <- rep(1/ncol(assets), ncol(assets))
@@ -200,12 +200,15 @@ Strategy <- function(assets,
   # -------------------------------
 
   # CALCULATE Prices / log returns
-  if (assetValueType == "price") {
-    if (length(which(assets<=0)) > 0) stop("Asset values with value type 'prices' must not be 0 or negative (because of log return calculations)!")
-    prices <- assets
-  } else if (assetValueType == "logReturn") {
+  if (assetValueType == "logReturn")
     prices <- .LogReturnsToPrices(assets)
-  }
+  if (assetValueType == "price")
+    prices <- assets
+  # no prices <= 0
+  if (length(which(assets<=0)) > 0) 
+    stop("Asset values with value type 'prices' must not be 0 or negative (because of log return calculations)!")
+  
+  
   if (printSteps==T) print("Prices set")
 
 

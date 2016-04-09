@@ -127,16 +127,17 @@ setMethod(f = "plot",
                   par(mar=c(0, margins[2], 0, margins[4]))
                   # pseudo for same time domain
                   plot.xts(prices_i, ylim=c(-1,1), type="n", main="", axes=F, auto.grid = T)
-                  # axis(4, at=pretty(range(rai[,i])), las=2) # no axis
                   
                   # signals
                   if (show.signals==T) {
                     par(new=T)
                     trades_i <- trades[trades[,i]!=0,i]
                     signals_i <- signals[index(trades_i),i]
-                    #signals_i <- na.fill(na.locf(merge.xts(signals[,i], prices_i)[,1]), 0) # resolve time domain issue
-                    #signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
-                    # plot
+                    signals_i <- na.fill(na.locf(merge.xts(signals[,i], prices_i)[,1]), 0) # resolve time domain issue
+                    signals_range <- c(-1,1)*max(abs(signals_i), na.rm=T) # 0 is middle
+                    # plot init / pseudo range for rectangles
+                    plot.xts(prices_i, ylim=signals_range, type="n", main="", axes=F, auto.grid=F)
+                    # plot colors
                     cols <- signals_i*NA
                     cols[signals_i>0] <- "green"
                     cols[signals_i<0] <- "red"
