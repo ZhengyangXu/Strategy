@@ -139,8 +139,8 @@ setMethod(f = "plot",
                     plot.xts(prices_i, ylim=signals_range, type="n", main="", axes=F, auto.grid=F)
                     # plot colors
                     cols <- signals_i*NA
-                    cols[signals_i>0] <- "green"
-                    cols[signals_i<0] <- "red"
+                    cols[signals_i>0] <- "lightblue"
+                    cols[signals_i<0] <- "lightblue" # might be changed later to different signal color
                     rect(xleft = .index(signals_i), ybottom = rep(0,nrow(signals_i)), xright = c(.index(signals_i[2:nrow(signals_i),]), .index(prices_i[nrow(prices),])), ytop = signals_i, col = cols, border = NA)
                     #barplot(signals_i, ylim=signals_range, axes=F, axisnames=F, col="lightblue", space=0, border=NA, main="")
                   }
