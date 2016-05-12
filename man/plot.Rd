@@ -5,7 +5,7 @@
 \alias{plot}
 \title{Plot of a \code{Strategy}-object}
 \usage{
-\S4method{plot}{Strategy}(x, from = NULL, until = NULL,
+\S4method{plot}{Strategy,ANY}(x, from = NULL, until = NULL,
   which.assets = NULL, which.filters = NULL, which.indicators = NULL,
   main = NULL, show.signals = T, include.costs = T, ...)
 }
