@@ -206,7 +206,7 @@ Strategy <- function(assets,
     prices <- assets
   # no prices <= 0
   if (length(which(assets<=0)) > 0) 
-    stop("Asset values with value type 'prices' must not be 0 or negative (because of log return calculations)!")
+    message("Asset values < 0 found. With value type 'prices' this is unusual. This might fail in log return calculation!")
   
   
   if (printSteps==T) print("Prices set")
