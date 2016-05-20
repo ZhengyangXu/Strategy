@@ -222,7 +222,7 @@ Strategy <- function(assets,
   filters <- strat.Out[["filters"]]
   signals <- as.xts(strat.Out[["signals"]]) #as.xts to prevent conversion probs
   prices <- as.xts(strat.Out[["prices"]])   #as.xts to prevent conversion probs
-  weights <- as.xts(strat.Out[["weights"]]) #as.xts to prevent conversion probs
+  weights <- as.xts(abs(strat.Out[["weights"]]) )#as.xts to prevent conversion probs, absolute weights due to sign in SIGNAL!
   indicators <- strat.Out[["indicators"]]
   
   if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
