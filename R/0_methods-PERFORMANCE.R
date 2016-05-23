@@ -128,7 +128,8 @@ setMethod(f = "performance",
             if (of == "portfolio") {
               # scale weights (in case not all assets selected)
               if (ncol(weights) != ncol(object@weights)) weights <- weights / xts(rowSums(abs(weights)),order.by=index(weights))
-              performance <- xts(rowSums(performance * weights), order.by=index(performance))
+              ret <- exp(.PricesToLogReturns(performance)) - 1
+              performance <- cumprod(1+xts(rowSums(ret * weights), order.by=index(performance)))
               if (use.backtest == T) {
                 colnames(performance) <- "Backtest Portfolio"
               } else {
