@@ -86,7 +86,7 @@ setMethod(f = "performance",
             # if (from > until)
             #   stop("From date cannot be greater than until date!")
             
-            logReturns <- .PricesToLogReturns(prices)
+            logReturns <- Strategy:::.PricesToLogReturns(prices)
             
             # add signals first row = 0 to let performance start at 1
             # in case logReturns start equal to signals, this is redundant
@@ -127,7 +127,7 @@ setMethod(f = "performance",
             # weight performances to portfolio level
             if (of == "portfolio") {
               # scale weights (in case not all assets selected)
-              weights <- weights / rowSums(weights)
+              if (ncol(weights) != ncol(object@weights)) weights <- weights / xts(rowSums(abs(weights)),order.by=index(weights))
               performance <- xts(rowSums(performance * weights), order.by=index(performance))
               if (use.backtest == T) {
                 colnames(performance) <- "Backtest Portfolio"
