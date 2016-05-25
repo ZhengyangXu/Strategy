@@ -438,6 +438,18 @@ setMethod(f = "plotWeights",
   
   par.mar <- par()$mar
   
+  # Ensure ellipse consistency
+  args <- list(...)
+  plot.main <- paste0(toupper(substring(type,1,1)), tolower(substring(type,2)), " Drawdowns of ", colnames(performance))
+  if ("main" %in% names(args))
+    plot.main <- args[["main"]]
+  if (length(plot.main) != ncol(performance))
+    stop("Please provide as many headings as graphics!")
+  args.inUse <- which(names(args) %in% "main")
+  if (length(args.inUse) > 0)
+    args <- args[-args.inUse] # select only editable arguments for plot
+  
+  
   # data
   weights <- abs(getWeights(object))
   signals <- getSignals(object)
@@ -448,25 +460,26 @@ setMethod(f = "plotWeights",
   # plot
   layout(matrix(c(1,2),ncol=2),widths=c(0.8,0.2))
   par(mar=c(mar[1:3],0))
-  # weights
-  plot(weights[,1], ylim=c(0,max(rowSums(weights))), type="n", las=2, minor.ticks=F, axes=FALSE, yaxs="i")
+  # plot weights timeline
+  plot(weights[,1], ylim=c(0,max(rowSums(weights))), type="n", las=2, minor.ticks=F, axes=FALSE, yaxs="i", ...)
   axis(1, at=.index(weights)[axTicksByTime(weights)], labels=names(axTicksByTime(weights)), las=2)
   axis(2, las=2)
   par(new=TRUE)
-  barplot(weights, col = col, space = 0, ylab = ""
-          , border = NA, axes=FALSE, names.arg="", yaxs="i", ylim=c(0,max(rowSums(weights))))
+  # plot weights as colored bars
+  barplot(weights, col = col, space = 0, ylab = "", border = NA, axes=FALSE, names.arg="", yaxs="i", ylim=c(0,max(rowSums(weights))))
   graphics::box()
+  # legend
   legendtext <- colnames(weights)
   if (is.null(legendtext)) {
     for (i in 1:dim[2]) {
       legendtext[i] = paste("Asset", i, sep = " ")
     }
   }
-  # legend
   par(mar=c(mar[1], 0, mar[3],0))
   plot(0,0,type="n",axes=FALSE,xlab="",ylab="",main="")
   legend("center", legend = legendtext, bty = "n", cex = 0.7, fill = col)
   
+  # reset layout
   layout(1)
   par(mar=par.mar)
 })
