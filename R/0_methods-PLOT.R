@@ -468,7 +468,7 @@ setMethod(f = "plotWeights",
   axis(2, las=2)
   par(new=TRUE)
   # plot weights as colored bars
-  barplot(weights, col = col, space = 0, ylab = "", border = NA, axes=FALSE, names.arg="", yaxs="i", ylim=c(0,max(rowSums(weights))))
+  barplot(weights, col = col, space = 0, ylab = "", border = NA, axes=FALSE, axisnames=FALSE, yaxs="i", ylim=c(0,max(rowSums(weights))))
   graphics::box()
   # legend
   legendtext <- colnames(weights)
