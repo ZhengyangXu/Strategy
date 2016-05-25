@@ -391,7 +391,9 @@ setMethod(f = "plotDrawdowns",
             for (i in 1:ncol(dd)) { #i<-1
               par(mar=margins)
               # plot(dd[,i], ylim=c(min(dd[,i])*1.04, 0), type="n", main=plot.main[i], minor.ticks=F, las=2, axes=F, yaxs="i", xaxs="i", ...)
-              plot(dd[,i], type="n", main=plot.main[i], minor.ticks=F, las=2, axes=F, ...)
+              do.call(function(...) { # using do.call for passing  plot arguments from ellipsis
+                plot(dd[,i], type="n", main=plot.main[i], minor.ticks=F, las=2, axes=F, ...)
+              }, args)
               axis(2, las=2)
               axis(1, at=.index(dd[,i])[axTicksByTime(dd)], labels=names(axTicksByTime(dd)), las=2)
               arr.x <- c(index(dd[from[i],i]), index(dd[to[i],i]))
@@ -459,7 +461,9 @@ setMethod(f = "plotWeights",
   layout(matrix(c(1,2),ncol=2),widths=c(0.8,0.2))
   par(mar=c(mar[1:3],0))
   # plot weights timeline
-  plot(weights[,1], ylim=c(0,max(rowSums(weights))), type="n", las=2, minor.ticks=F, axes=FALSE, yaxs="i", ...)
+  do.call(function(...) { # using do.call for passing  plot arguments from ellipsis
+    plot(weights[,1], ylim=c(0,max(rowSums(weights))), type="n", las=2, minor.ticks=F, axes=FALSE, yaxs="i", main=plot.main)
+  }, args)
   axis(1, at=.index(weights)[axTicksByTime(weights)], labels=names(axTicksByTime(weights)), las=2)
   axis(2, las=2)
   par(new=TRUE)
