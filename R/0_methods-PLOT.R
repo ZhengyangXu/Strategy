@@ -440,11 +440,9 @@ setMethod(f = "plotWeights",
   
   # Ensure ellipse consistency
   args <- list(...)
-  plot.main <- paste0(toupper(substring(type,1,1)), tolower(substring(type,2)), " Drawdowns of ", colnames(performance))
+  plot.main <- "Portfolio Weights"
   if ("main" %in% names(args))
     plot.main <- args[["main"]]
-  if (length(plot.main) != ncol(performance))
-    stop("Please provide as many headings as graphics!")
   args.inUse <- which(names(args) %in% "main")
   if (length(args.inUse) > 0)
     args <- args[-args.inUse] # select only editable arguments for plot
