@@ -455,7 +455,7 @@ setMethod(f = "plotWeights",
   signals <- getSignals(object)
   col <- rainbow(ncol(weights))
   
-  mar <- c(5, 4, 4, 2) + 0.1
+  mar <- c(7, 4.1, 4.1, 2.1)
   
   # plot
   layout(matrix(c(1,2),ncol=2),widths=c(0.8,0.2))
