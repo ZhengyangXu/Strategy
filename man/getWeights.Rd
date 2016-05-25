@@ -15,6 +15,8 @@ getWeights(object, from=NULL, until=NULL, which=NULL)
 \item{until}{The date in character format \code{"yyyy-MM-dd"} or as date-object until which weights shall be returned. If \code{NULL}, no restriction is made.}
 
 \item{which}{Names or column-number of assets that should be included. If \code{NULL}, all weights are returned.}
+
+\item{use.backtest}{If set to \code{TRUE}, the weights of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.}
 }
 \description{
 Gets the weights data of an object of class \code{Strategy} that was used within strategy calculation.

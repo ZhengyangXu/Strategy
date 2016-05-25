@@ -58,7 +58,7 @@ setMethod(f = "getPrices",
 )
 
 setGeneric(name = "getWeights",
-           def = function(object, from=NULL, until=NULL, which=NULL) {
+           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=FALSE) {
              standardGeneric("getWeights")
            }
 )
@@ -73,6 +73,7 @@ setGeneric(name = "getWeights",
 #' @param which Names or column-number of assets that should be included. If \code{NULL}, all weights are returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which weights shall be returned If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which weights shall be returned. If \code{NULL}, no restriction is made.
+#' @param use.backtest If set to \code{TRUE}, the weights of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.
 #' @examples
 #' ##Not run:
 #'
@@ -86,7 +87,7 @@ setGeneric(name = "getWeights",
 #' ##End(Not run)
 setMethod(f = "getWeights",
           signature = "Strategy",
-          definition = function(object, from, until, which) {
+          definition = function(object, from, until, which, use.backtest) {
             
             # get all weights
             weights <- object@weights
@@ -114,7 +115,7 @@ setMethod(f = "getWeights",
 )
 
 setGeneric(name = "getTrades",
-           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=F) {
+           def = function(object, from=NULL, until=NULL, which=NULL, of="signals", use.backtest=F) {
              standardGeneric("getTrades")
            }
 )
@@ -127,9 +128,10 @@ setGeneric(name = "getTrades",
 #' @usage getTrades(object, from=NULL, until=NULL, which=NULL
 #'        , use.backtest=FALSE)
 #' @param object An object of class \code{Strategy}.
-#' @param which Names or column-number of assets that should be included. If \code{NULL}, trades for all assets are returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which trades shall be returned. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which trades shall be returned. If \code{NULL}, no restriction is made.
+#' @param which Names or column-number of assets that should be included. If \code{NULL}, trades for all assets are returned.
+#' @param of Trades to be calculated on basis of trading \code{signals} or \code{weights} of portfolio.
 #' @param use.backtest If set to \code{TRUE}, the trades of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.
 #' @examples
 #' ##Not run:
@@ -144,10 +146,13 @@ setGeneric(name = "getTrades",
 #' ##End(Not run)
 setMethod(f = "getTrades",
           signature = "Strategy",
-          definition = function(object, from, until, which, use.backtest) {
+          definition = function(object, from, until, which, of=c("signals","weights"), use.backtest) {
+            
+            of <- match.arg(of)
             
             # get all signals
             signals <- getSignals(object, from=from, until=until, which=which, use.backtest=use.backtest)
+            if (of == "weights") signals <- signals * getWeights(object, from=from, until=until, which=which, use.backtest=use.backtest)[index(signals)]
             
             # calculate trades based on differences of trading signals
             sigdiff <- abs(diff(signals, na.pad=T))

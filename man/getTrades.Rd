@@ -18,6 +18,8 @@ getTrades(object, from=NULL, until=NULL, which=NULL
 
 \item{which}{Names or column-number of assets that should be included. If \code{NULL}, trades for all assets are returned.}
 
+\item{of}{Trades to be calculated on basis of trading \code{signals} or \code{weights} of portfolio.}
+
 \item{use.backtest}{If set to \code{TRUE}, the trades of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.}
 }
 \description{
