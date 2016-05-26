@@ -66,25 +66,25 @@ setMethod(f = "performance",
             
             # VALIDATE Date Range Input!
             # from
-            # if (!is.null(from)) {
-            #   # if from is not a valid date, this will throw an error
-            #   from <- as.Date(from)
-            #   # do not start before price data
-            #   if (from < start(prices))
-            #     from <- start(prices)
-            # } else {
-            #   from <- from.start
-            # }
-            # # until
-            # if (!is.null(until)) {
-            #   # if until is not a valid date, this will throw an error
-            #   until <- as.Date(until)
-            # } else {
-            #   until <- end(signals)
-            # }
-            # # range validation
-            # if (from > until)
-            #   stop("From date cannot be greater than until date!")
+            if (!is.null(from)) {
+              # if from is not a valid date, this will throw an error
+              from <- as.Date(from)
+              # do not start before price data
+              if (from < start(prices))
+                from <- start(prices)
+            } else {
+              from <- from.start
+            }
+            # until
+            if (!is.null(until)) {
+              # if until is not a valid date, this will throw an error
+              until <- as.Date(until)
+            } else {
+              until <- end(signals)
+            }
+            # range validation
+            if (from > until)
+              stop("From date cannot be greater than until date!")
             
             logReturns <- Strategy:::.PricesToLogReturns(prices)
             
@@ -110,9 +110,9 @@ setMethod(f = "performance",
               costs.rel <- costs$relative
               volume <- object@volume
               trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
-              # add relative costs
-              ret <- ret - sign(signals) * trades * costs.rel/100
-              perf1 <- cumprod(ret*signals + 1)*volume
+              # calculate realized returns
+              ret <- ret*signals - trades * costs.rel/100
+              perf1 <- cumprod(ret + 1)*volume
               # add fix costs
               costs.fix.cum <- cumsum(trades * costs.fix)
               # calculate value for assets including all costs
