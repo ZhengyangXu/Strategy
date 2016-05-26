@@ -111,7 +111,7 @@ setMethod(f = "performance",
               volume <- object@volume
               trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
               # calculate realized returns
-              ret <- ret*signals - trades * costs.rel/100
+              ret <- ret*signals - trades * costs.rel
               perf1 <- cumprod(ret + 1)*volume
               # add fix costs
               costs.fix.cum <- cumsum(trades * costs.fix)

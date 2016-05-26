@@ -69,7 +69,7 @@ setClass(Class="Strategy",
 #' @param strat.params The list of parameters and their values required by the strategy function selected with parameter strat.
 #' @param volume Portfolio volume for trading. Default value is \code{100000}.
 #' @param costs.fix The fix trading costs per trade. 
-#' @param costs.rel The trading costs, relative to the volume, per trade in percent. I.e. a value of \code{1} reflects the costs of 1 percent of the traded volume.
+#' @param costs.rel The trading costs, relative to the volume. I.e. a value of \code{10E-4} reflects the costs of 10 basis points of the traded volume.
 #' @param printSteps This is a feature used mainly for debugging the constructor function in order to localize where unspecified errors occur. If set to true, the different steps run within the constructor is printed to the console.
 #' @examples
 #' ##Not run:

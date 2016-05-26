@@ -30,7 +30,7 @@ asset value types, either one of the types has to be selected.}
 
 \item{costs.fix}{The fix trading costs per trade.}
 
-\item{costs.rel}{The trading costs, relative to the volume, per trade in percent. I.e. a value of \code{1} reflects the costs of 1 percent of the traded volume.}
+\item{costs.rel}{The trading costs, relative to the volume. I.e. a value of \code{10E-4} reflects the costs of 10 basis points of the traded volume.}
 
 \item{printSteps}{This is a feature used mainly for debugging the constructor function in order to localize where unspecified errors occur. If set to true, the different steps run within the constructor is printed to the console.}
 }
