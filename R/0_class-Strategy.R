@@ -178,7 +178,8 @@ Strategy <- function(assets,
   }, error = function(e) stop(paste0("Strategy ", strat, " could not be found. Consult Strategy()-documentation for available strategies.")) )
   tryCatch({
     plotFUN <- get(paste0("plot.", tolower(strat)), envir = environment(Strategy))
-  }, error = function(e) message("No plot function defined. Generic plotting will be used. This is just an information.") )
+  }, error = function(e) {}#message("No plot function defined. Generic plotting will be used. This is just an information.") 
+    )
 
   if (printSteps==T) print("Strategy function(s) checked.")
   
