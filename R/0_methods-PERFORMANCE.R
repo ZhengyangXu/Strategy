@@ -705,7 +705,11 @@ setMethod(f = "performanceIndicators",
             which.out <- validWhich(which, prices)
             
             # TRADES
-            trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
+            tradesof <- "signals"
+            if (of=="portfolio") {
+              tradesof <- "weights"
+            }
+            trades <- getTrades(object, from=from, until=until, which=which, of=tradesof, use.backtest=use.backtest)
             
             if (of == "portfolio") {
               tradesSum <- sum(trades)

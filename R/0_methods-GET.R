@@ -155,9 +155,9 @@ setMethod(f = "getTrades",
             if (of == "weights") signals <- signals * getWeights(object, from=from, until=until, which=which, use.backtest=use.backtest)[index(signals)]
             
             # calculate trades based on differences of trading signals
-            sigdiff <- abs(diff(signals, na.pad=T))
+            sigdiff <- abs(diff(signals, na.pad=TRUE))
             sigdiff[1,] <- 0
-            longshort <- abs(diff(sign(signals), na.pad=T))
+            longshort <- abs(diff(sign(signals), na.pad=TRUE))
             longshort[1,] <- 0
             trades <- sigdiff*0
             # 1 trades made (no long/short change)
