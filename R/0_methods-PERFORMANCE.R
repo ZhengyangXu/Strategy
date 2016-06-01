@@ -821,14 +821,19 @@ setMethod(f = "compare",
             
             # INIT performance matrice
             performance_mat <- matrix(ncol=len, nrow=8)
-            rownames(performance_mat) <- c("Scaled Returns", "Scaled Vola", "Scaled Sharpe", "MDD", "VaR", "ES", "Hit Ratio", "Trades")
+            rownames(performance_mat) <- c("Ann. Returns", "Ann. Vola", "Ann. Sharpe", "MDD", "Ann. VaR", "Ann. ES", "Hit Ratio", "Trades")
             colnames(performance_mat) <- names
+            
             
             # fill performance matrix
             for (i in 1:len) { #i<-1
               strategy <- strategies.list[[i]]
               performance_mat[,i] <- performanceIndicators(strategy, of="portfolio", from=from, until=until, which=which, include.costs=include.costs, use.backtest=use.backtest, scaling.period=scaling.periods[i])
             }
+            
+            if (is.null(scaling.periods))
+              scaling.periods <- .annFactor(logReturns)
+            attr(performance_mat, "Ann. Scaling") <- scaling.periods
             
             return(performance_mat)
           }
