@@ -3,7 +3,7 @@
 # within potential date range
 # as xts object
 setGeneric(name = "performance",
-           def = function(object, of="portfolio", from=NULL, until=NULL, which=NULL, type="performance", use.backtest=F, include.costs=T) {
+           def = function(object, of="portfolio", from=NULL, until=NULL, which=NULL, type="performance", use.backtest=FALSE, include.costs=TRUE) {
              standardGeneric("performance")
            }
 )
@@ -103,13 +103,18 @@ setMethod(f = "performance",
             ret <- (exp(logReturns)-1)
             
             # Calculate strategy performance
-            if (include.costs==T) {
+            if (include.costs==TRUE) {
               # get costs
               costs <- getCosts(object)
               costs.fix <- costs$fix
               costs.rel <- costs$relative
               volume <- object@volume
-              trades <- getTrades(object, from=from, until=until, which=which, use.backtest=use.backtest)
+              
+              tradesof <- "signals"
+              if (of=="portfolio") {
+                tradesof <- "weights"
+              }
+              trades <- getTrades(object, from=from, until=until, which=which, of=tradesof, use.backtest=use.backtest)
               # calculate realized returns
               ret <- ret*signals - trades * costs.rel
               perf1 <- cumprod(ret + 1)*volume
