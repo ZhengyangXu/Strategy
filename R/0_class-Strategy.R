@@ -221,9 +221,12 @@ Strategy <- function(assets,
   strat.Out <- stratFUN(prices = prices, weights = weights, indicators = indicators, parameters = strat.params)
   strat.params <- strat.Out[["parameters"]]
   filters <- strat.Out[["filters"]]
-  signals <- as.xts(strat.Out[["signals"]]) #as.xts to prevent conversion probs
-  prices <- as.xts(strat.Out[["prices"]])   #as.xts to prevent conversion probs
-  weights <- abs(as.xts(strat.Out[["weights"]]))#as.xts to prevent conversion probs, absolute weights due to sign in SIGNAL!
+  signals <- as.xts(strat.Out[["signals"]]) #as.xts() and xts() to prevent conversion probs
+  signals <- xts(signals, order.by=as.Date(index(signals)))
+  prices <- as.xts(strat.Out[["prices"]])   #as.xts() and xts() to prevent conversion probs
+  prices <- xts(prices, order.by=as.Date(index(prices)))
+  weights <- abs(as.xts(strat.Out[["weights"]]))#as.xts and xts() to prevent conversion probs, absolute weights due to sign in SIGNAL!
+  weights <- xts(weights, order.by=as.Date(index(weights)))
   indicators <- strat.Out[["indicators"]]
   
   if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
