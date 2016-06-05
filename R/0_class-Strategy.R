@@ -222,11 +222,11 @@ Strategy <- function(assets,
   strat.params <- strat.Out[["parameters"]]
   filters <- strat.Out[["filters"]]
   signals <- as.xts(strat.Out[["signals"]]) #as.xts() and xts() to prevent conversion probs
-  signals <- xts(signals, order.by=as.Date(index(signals)))
+  signals <- xts(signals, order.by=as.Date(index(signals), tz=""))
   prices <- as.xts(strat.Out[["prices"]])   #as.xts() and xts() to prevent conversion probs
-  prices <- xts(prices, order.by=as.Date(index(prices)))
+  prices <- xts(prices, order.by=as.Date(index(prices), tz=""))
   weights <- abs(as.xts(strat.Out[["weights"]]))#as.xts and xts() to prevent conversion probs, absolute weights due to sign in SIGNAL!
-  weights <- xts(weights, order.by=as.Date(index(weights)))
+  weights <- xts(weights, order.by=as.Date(index(weights), tz=""))
   indicators <- strat.Out[["indicators"]]
   
   if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
@@ -235,9 +235,9 @@ Strategy <- function(assets,
     stop("There must be a filter output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
   
     # Ensure same date format
-  index(prices) <- as.Date(index(prices), tz="")
-  index(signals) <- as.Date(index(signals), tz="")
-  index(weights) <- as.Date(index(weights), tz="")
+  # index(prices) <- as.Date(index(prices), tz="")
+  # index(signals) <- as.Date(index(signals), tz="")
+  # index(weights) <- as.Date(index(weights), tz="")
   
   # Ensure time consistency
   weights <- weights[index(signals)]
