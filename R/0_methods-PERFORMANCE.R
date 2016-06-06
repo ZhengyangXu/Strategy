@@ -648,8 +648,8 @@ setMethod(f = "hitratio",
 
 # Returns a list of different performance measurements of the strategy.
 setGeneric(name = "performanceIndicators",
-           def = function(object, of="portfolio", from=NULL, until=NULL, which=NULL, alpha=0.05, V=1
-                          , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
+           def = function(object, of="portfolio", from=NULL, until=NULL, which=NULL, alpha=0.05
+                          , scaling.periods=NULL, include.weights=TRUE, include.costs=TRUE, use.backtest=FALSE) {
              standardGeneric("performanceIndicators")
            }
 )
@@ -667,7 +667,6 @@ setGeneric(name = "performanceIndicators",
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
-#' @param V Volume that is invested. The linear factor for the VaR and ES calculation. Either a single value for portfolio or a vector for each asset. 
 #' @param of Indicators to be calculated for assets separately or the portfolio.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which performance shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which performance shall be considered. If \code{NULL}, no restriction is made.
@@ -688,7 +687,7 @@ setGeneric(name = "performanceIndicators",
 #' ## End(Not run)
 setMethod(f = "performanceIndicators",
           signature = "Strategy",
-          definition = function(object, of=c("portfolio", "assets"), from, until, which, alpha, V, scaling.periods, include.weights, include.costs, use.backtest) {
+          definition = function(object, of=c("portfolio", "assets"), from, until, which, alpha, scaling.periods, include.weights, include.costs, use.backtest) {
             
             of <- match.arg(of)
             

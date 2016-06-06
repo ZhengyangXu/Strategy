@@ -24,8 +24,6 @@ performanceIndicators(object, of="portfolio"
 
 \item{alpha}{The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.}
 
-\item{V}{Volume that is invested. The linear factor for the VaR and ES calculation. Either a single value for portfolio or a vector for each asset.}
-
 \item{scaling.periods}{Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.}
 
 \item{include.weights}{Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered.}
