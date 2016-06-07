@@ -229,7 +229,7 @@ setMethod(f = "sharpe",
 
 # Loss calculation
 setGeneric(name = "loss",
-           def = function(object, V=100, method="full", of="portfolio", from=NULL, until=NULL, which=NULL, include.weights=T, include.costs=T, use.backtest=F) {
+           def = function(object, V=100, method="full", of="portfolio", from=NULL, until=NULL, which=NULL, include.weights=TRUE, include.costs=TRUE, use.backtest=FALSE) {
              standardGeneric("loss")
            }
 )
@@ -288,7 +288,7 @@ setMethod(f = "loss",
             
             # calculate losses with returns
             if (of=="assets") {
-              if (include.weights==F) {
+              if (include.weights==FALSE) {
               weights <- 1
               } else  {
                 weights <- getWeights(object)[index(returns),colnames(returns)]
@@ -304,7 +304,7 @@ setMethod(f = "loss",
 
 # Value at Risk calculation
 setGeneric(name = "VaR",
-           def = function(object, alpha=0.05, V=1, type="historical", method="full", of="portfolio"
+           def = function(object, alpha=0.05, V=1, type="normal.distribution", method="full", of="portfolio"
                           , from=NULL, until=NULL, which=NULL
                           , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("VaR")
@@ -351,7 +351,7 @@ setGeneric(name = "VaR",
 #' ## End(Not run)
 setMethod(f = "VaR",
           signature = "Strategy",
-          definition = function(object, alpha, V, type=c("historical", "normal.distribution")
+          definition = function(object, alpha, V, type=c("normal.distribution", "historical")
                                 , method=c("full", "linear"),  of=c("portfolio", "assets")
                                 , from, until, which, scaling.periods, include.weights, include.costs, use.backtest) {
             of <- match.arg(of)
