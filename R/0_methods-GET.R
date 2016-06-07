@@ -110,6 +110,9 @@ setMethod(f = "getWeights",
             # restrict weights to range
             weights <- weights[paste0(from,"::",until), which.out]
             
+            # reconstruct original weights
+            weights <- weights * getSignals(object, from=from, until=until, which=which.out, use.backtest=use.backtest)[index(weights)]
+            
             return(weights)
           }
 )

@@ -99,8 +99,26 @@ setMethod(f = "performance",
               colnames(signals) <- colnames(prices)
             }
             
-            weights <- getWeights(object)[index(signals),colnames(signals)]
+            # arith. returns
             ret <- (exp(logReturns)-1)
+            
+            # weight performances to portfolio level
+            if (of == "portfolio") {
+              # get weights (already with signal included)
+              weights <- getWeights(object)[index(ret),colnames(signals)] 
+              # scale weights (in case not all assets selected)
+              if (ncol(weights) != ncol(object@weights)) {
+                normweights <- rowSums(abs(weights)) #init
+                for (i in 1:ncol(weights)) weights[,i] <- weights[,i]/normweights
+              }
+              # compute cumulative performance without costs
+              performance <- cumprod(1+xts(rowSums(ret * weights), order.by=index(weights)))
+              if (use.backtest == T) {
+                colnames(performance) <- "Backtest Portfolio"
+              } else {
+                colnames(performance) <- "Portfolio"
+              }
+            }
             
             # Calculate strategy performance
             if (include.costs==TRUE) {
@@ -109,44 +127,36 @@ setMethod(f = "performance",
               costs.fix <- costs$fix
               costs.rel <- costs$relative
               volume <- object@volume
-              
+              # get number of trades per period
               tradesof <- "signals"
-              if (of=="portfolio") {
-                tradesof <- "weights"
-              }
+              if (of=="portfolio") tradesof <- "weights"
               trades <- getTrades(object, from=from, until=until, which=which, of=tradesof, use.backtest=use.backtest)
-              # calculate realized returns
-              ret <- ret*signals - trades * costs.rel
+              if (of=="portfolio") {
+                trades <- xts(rowSums(trades), order.by=index(trades))
+                # portfolio returns before costs
+                ret <- exp(.PricesToLogReturns(performance))-1 
+              }
+
+              # consider relative costs
+              ret <- ret - trades * costs.rel
+              # absolute performance with relative costs
               perf1 <- cumprod(ret + 1)*volume
               # add fix costs
               costs.fix.cum <- cumsum(trades * costs.fix)
-              # calculate value for assets including all costs
+              # consider fix costs
               perf2 <- perf1 - costs.fix.cum
-              performance <- perf2/as.numeric(perf2[1,])
-            } else {
-              # calculate performances for assets
-              performance <- cumprod(ret*signals + 1) # = cumprod ( arith.return * signals + 1)
+              # compute performance after cost
+              performance <- perf2*NA # init
+              for (i in 1:ncol(performance)) performance[,i] <- perf2[,i]/as.numeric(perf2[1,i])
             }
 
-
-            # weight performances to portfolio level
-            if (of == "portfolio") {
-              # scale weights (in case not all assets selected)
-              if (ncol(weights) != ncol(object@weights)) weights <- weights / xts(rowSums(abs(weights)),order.by=index(weights))
-              ret <- exp(.PricesToLogReturns(performance)) - 1
-              performance <- cumprod(1+xts(rowSums(ret * weights), order.by=index(performance)))
-              if (use.backtest == T) {
-                colnames(performance) <- "Backtest Portfolio"
-              } else {
-                colnames(performance) <- "Portfolio"
-              }
-            }
             
             if (type == "logReturns") {
               performance <- .PricesToLogReturns(performance)
             } else if (type == "returns") {
               performance <- exp(.PricesToLogReturns(performance)) - 1
             }
+            
             return(performance)
           }
 )
