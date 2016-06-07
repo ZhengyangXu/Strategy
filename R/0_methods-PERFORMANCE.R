@@ -118,8 +118,10 @@ setMethod(f = "performance",
               } else {
                 colnames(performance) <- "Portfolio"
               }
+              # realized returns of portfolio before costs
+              ret <- exp(.PricesToLogReturns(performance))-1 
             } else {
-              # realized returns of assets without weights
+              # realized returns of assets without weights before costs
               ret <- ret * signals
             }
             
@@ -134,11 +136,7 @@ setMethod(f = "performance",
               tradesof <- "signals"
               if (of=="portfolio") tradesof <- "weights"
               trades <- getTrades(object, from=from, until=until, which=which, of=tradesof, use.backtest=use.backtest)
-              if (of=="portfolio") {
-                trades <- xts(rowSums(trades), order.by=index(trades))
-                # portfolio returns before costs
-                ret <- exp(.PricesToLogReturns(performance))-1 
-              }
+              if (of=="portfolio") trades <- xts(rowSums(trades), order.by=index(trades))
 
               # consider relative costs
               ret <- ret - trades * costs.rel
@@ -151,13 +149,16 @@ setMethod(f = "performance",
               # compute performance after cost
               performance <- perf2*NA # init
               for (i in 1:ncol(performance)) performance[,i] <- perf2[,i]/as.numeric(perf2[1,i])
+            } else {
+              # realized performance
+              performance <- cumprod(1 + ret)
             }
 
             
             if (type == "logReturns") {
               performance <- .PricesToLogReturns(performance)
             } else if (type == "returns") {
-              performance <- exp(.PricesToLogReturns(performance)) - 1
+              performance <- ret
             }
             
             return(performance)
