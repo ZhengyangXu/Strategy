@@ -118,6 +118,9 @@ setMethod(f = "performance",
               } else {
                 colnames(performance) <- "Portfolio"
               }
+            } else {
+              # realized returns of assets without weights
+              ret <- ret * signals
             }
             
             # Calculate strategy performance
