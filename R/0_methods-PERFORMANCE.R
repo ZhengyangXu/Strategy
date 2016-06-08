@@ -458,14 +458,16 @@ setMethod(f = "ES",
               }), ncol=ncol(L))
             } else if (type=="normal.distribution") {
               # analytical VaR calculation with estimated params and normal distribution
-              xdnorm <- function(x, mean, sd) x * dnorm(x, mean=mean, sd=sd)
+              # xdnorm <- function(x, mean, sd) x * dnorm(x, mean=mean, sd=sd)
               ES <- matrix(apply(L, MARGIN=2, FUN=function(x) {
                 mu <- mean(x)
                 sigma <- sd(x)
-                # for each alpha integrate from VaR(alpha) to Inf
+                # for each alpha compute ES
                 sapply(alpha, FUN=function(a) {
-                  VaR <- qnorm(1-a, mean=mu, sd=sigma)
-                  integrate(xdnorm, VaR, Inf, mean=mu, sd=sigma, subdivisions = 1E6, stop.on.error = FALSE)$value / a
+                  mu + sigma * dnorm(qnorm(1-a))/ a
+                  # alternative computation method:
+                  #VaR <- qnorm(1-a, mean=mu, sd=sigma)
+                  #integrate(xdnorm, VaR, Inf, mean=mu, sd=sigma, subdivisions = 1E6, stop.on.error = FALSE)$value / a
                 })
               }), ncol=ncol(L))
             }
