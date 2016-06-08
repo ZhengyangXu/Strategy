@@ -690,10 +690,6 @@ setMethod(f = "performanceIndicators",
             ES <- ES(object, of=of, which=which, scaling.periods=scaling.periods, include.weights=include.weights, include.costs=include.costs, use.backtest=use.backtest)
             hitratio <- hitratio(object, from=from, until=until, of=of, which=which, include.costs=include.costs, use.backtest=use.backtest)
             
-            # validate which values
-            prices <- head(getPrices(object, from=from, until=until, which=which))
-            which.out <- validWhich(which, prices)
-            
             # TRADES
             tradesof <- "signals"
             if (of=="portfolio") {
