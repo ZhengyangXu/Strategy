@@ -5,12 +5,11 @@
 \alias{VaR}
 \title{Value at Risk}
 \usage{
-VaR(object, alpha=0.05, V=1
-     , type="historical", method="full"
-     , of="portfolio", from=NULL, until=NULL
-     , which=NULL, scaling.periods=NULL
-     , include.weights=T, include.costs=T
-     , use.backtest=F)
+\S4method{VaR}{Strategy}(object, alpha = 0.05, V = 1,
+  type = c("normal.distribution", "historical"), method = c("full",
+  "linear"), of = c("portfolio", "assets"), from = NULL, until = NULL,
+  which = NULL, scaling.periods = NULL, include.weights = T,
+  include.costs = T, use.backtest = F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

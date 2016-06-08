@@ -316,12 +316,6 @@ setGeneric(name = "VaR",
 #' @aliases VaR
 #' @title Value at Risk
 #' @description Value at Risk of the assets or portfolio of an object of class \code{Strategy}.
-#' @usage VaR(object, alpha=0.05, V=1
-#'      , type="historical", method="full"
-#'      , of="portfolio", from=NULL, until=NULL
-#'      , which=NULL, scaling.periods=NULL
-#'      , include.weights=T, include.costs=T
-#'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
 #' @param V Volume that is invested. The linear factor for the VaR calculation. Either a single value for portfolio or a vector for each asset. 
@@ -371,13 +365,14 @@ setMethod(f = "VaR",
               scaling.periods <- .annFactor(L)
             
             # validations
-            if (length(scaling.periods) == 1) scaling.periods <- rep(scaling.periods, ncol(L))
-            if (length(scaling.periods) != ncol(L)) stop("Please provide scaling periods as numeric vector with length 1 or the same number of portfolio assets.")
+            if (length(scaling.periods) == 1) {
+              scaling.periods <- rep(scaling.periods, ncol(L))
+            } else if (length(scaling.periods) != ncol(L)) stop("Please provide scaling periods as numeric vector with length 1 or the same number of portfolio assets.")
             
             if (type=="historical") {
               # deterministic VaR calculation
               VaR <- matrix(apply(coredata(L), FUN=function(x) quantile(x, probs=(1-alpha), names=F), MARGIN=2), ncol=ncol(L))
-            } else if (type=="analytical") {
+            } else if (type=="normal.distribution") {
               # analytical VaR calculation with estimated params and normal distribution
               VaR <- matrix(apply(coredata(L), FUN=function(x) qnorm(1-alpha, mean=mean(x), sd=sd(x)), MARGIN=2), ncol=ncol(L))
             }
@@ -461,7 +456,7 @@ setMethod(f = "ES",
                 VaR <- quantile(x, probs=(1-alpha), names=F)
                 sapply(VaR, FUN=function(VaR.i) mean(x[x>=VaR.i]))
               }), ncol=ncol(L))
-            } else if (type=="analytical") {
+            } else if (type=="normal.distribution") {
               # analytical VaR calculation with estimated params and normal distribution
               xdnorm <- function(x, mean, sd) x * dnorm(x, mean=mean, sd=sd)
               ES <- matrix(apply(L, MARGIN=2, FUN=function(x) {
