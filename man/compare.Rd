@@ -5,9 +5,9 @@
 \alias{compare}
 \title{Compare performance of \code{Strategy}-objects.}
 \usage{
-compare(..., from=NULL, until=NULL, which=NULL
-     , scaling.periods=NULL, include.costs=T
-     , use.backtest=F, include.params=F)
+\S4method{compare}{Strategy}(..., from = NULL, until = NULL, which = NULL,
+  scaling.periods = NULL, include.costs = T, use.backtest = F,
+  include.params = F)
 }
 \arguments{
 \item{...}{Objects of class \code{Strategy}.}
@@ -27,7 +27,7 @@ compare(..., from=NULL, until=NULL, which=NULL
 \item{include.params}{If \code{TRUE} the parameters of the strategies are included in their names. E.g. \code{MA(k=200)} instead of \code{MA} as strategy name for moving average.}
 }
 \description{
-Compare the portfoio performance indicators of an arbitrary number of objects of class \code{Strategy}.
+Compare the portfolio performance indicators of an arbitrary number of objects of class \code{Strategy}.
 }
 \examples{
 ##Not run:

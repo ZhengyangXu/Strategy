@@ -5,9 +5,9 @@
 \alias{hitratio}
 \title{Strategy Hit Ratio}
 \usage{
-hitratio(object, of="portfolio", type="per.signal"
-     , which=NULL, from=NULL, until=NULL
-     , include.costs=T, use.backtest=F)
+\S4method{hitratio}{Strategy}(object, of = c("portfolio", "assets"),
+  from = NULL, until = NULL, which = NULL, type = c("per.signal",
+  "per.trade"), include.costs = T, use.backtest = F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

@@ -5,9 +5,9 @@
 \alias{MDD}
 \title{Strategy Performance Maximum Drawdown}
 \usage{
-MDD(object, of="portfolio", type="relative"
-     , which=NULL, from=NULL, until=NULL
-     , include.costs=T, use.backtest=F)
+\S4method{MDD}{Strategy}(object, of = c("portfolio", "assets"), from = NULL,
+  until = NULL, which = NULL, type = c("absolute", "relative"),
+  include.costs = T, use.backtest = F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

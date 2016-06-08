@@ -239,10 +239,6 @@ setGeneric(name = "loss",
 #' @aliases loss
 #' @title Get the losses of assets or portfolio over time.
 #' @description Losses over time of an assets or portfolio of an object of class \code{Strategy}.
-#' @usage loss(object, period="day", of="portfolio"
-#'      , which=NULL, from=NULL, until=NULL
-#'      , include.weights=T, include.costs=T
-#'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param V Volume that is invested. The linear factor for the VaR calculation. Either a single value for portfolio or a vector for each asset. 
 #' @param method Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns.
@@ -495,9 +491,6 @@ setGeneric(name = "MDD",
 #' @aliases MDD
 #' @title Strategy Performance Maximum Drawdown
 #' @description Gets the maximum drawdown of the performance of an object of class \code{Strategy}.
-#' @usage MDD(object, of="portfolio", type="relative"
-#'      , which=NULL, from=NULL, until=NULL
-#'      , include.costs=T, use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param of Maximum Drawdown to be calculated for assets separately or the portfolio.
@@ -569,9 +562,6 @@ setGeneric(name = "hitratio",
 #' @aliases hitratio
 #' @title Strategy Hit Ratio
 #' @description Gets the hitratio of the signals of an object of class \code{Strategy}.
-#' @usage hitratio(object, of="portfolio", type="per.signal"
-#'      , which=NULL, from=NULL, until=NULL
-#'      , include.costs=T, use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param of Hit Ratio to be calculated for assets separately or the portfolio (weighted hit ratios according to average asset weights).
@@ -665,11 +655,6 @@ setGeneric(name = "performanceIndicators",
 #' @aliases performanceIndicators
 #' @title Strategy Performance Indicators
 #' @description Get a list of the performance indicators of an object of class \code{Strategy}.
-#' @usage performanceIndicators(object, of="portfolio"
-#'      , from=NULL, until=NULL, which=NULL
-#'      , alpha=0.05, V=1, scaling.periods=NULL
-#'      , include.weights=T, include.costs=T
-#'      , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
@@ -765,10 +750,7 @@ setGeneric(name = "compare",
 #' @name compare
 #' @aliases compare
 #' @title Compare performance of \code{Strategy}-objects.
-#' @description Compare the portfoio performance indicators of an arbitrary number of objects of class \code{Strategy}.
-#' @usage compare(..., from=NULL, until=NULL, which=NULL
-#'      , scaling.periods=NULL, include.costs=T
-#'      , use.backtest=F, include.params=F)
+#' @description Compare the portfolio performance indicators of an arbitrary number of objects of class \code{Strategy}.
 #' @param ... Objects of class \code{Strategy}.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which performance shall be considered. If \code{NULL}, no restriction is made.

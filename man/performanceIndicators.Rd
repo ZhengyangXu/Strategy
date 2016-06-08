@@ -5,11 +5,10 @@
 \alias{performanceIndicators}
 \title{Strategy Performance Indicators}
 \usage{
-performanceIndicators(object, of="portfolio"
-     , from=NULL, until=NULL, which=NULL
-     , alpha=0.05, V=1, scaling.periods=NULL
-     , include.weights=T, include.costs=T
-     , use.backtest=F)
+\S4method{performanceIndicators}{Strategy}(object, of = c("portfolio",
+  "assets"), from = NULL, until = NULL, which = NULL, alpha = 0.05,
+  scaling.periods = NULL, include.weights = TRUE, include.costs = TRUE,
+  use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

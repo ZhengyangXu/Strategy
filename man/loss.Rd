@@ -5,10 +5,10 @@
 \alias{loss}
 \title{Get the losses of assets or portfolio over time.}
 \usage{
-loss(object, period="day", of="portfolio"
-     , which=NULL, from=NULL, until=NULL
-     , include.weights=T, include.costs=T
-     , use.backtest=F)
+\S4method{loss}{Strategy}(object, V = 100, method = c("full", "linear"),
+  of = c("portfolio", "assets"), from = NULL, until = NULL,
+  which = NULL, include.weights = TRUE, include.costs = TRUE,
+  use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
