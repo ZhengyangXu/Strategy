@@ -5,11 +5,11 @@
 \alias{ES}
 \title{Expected Shortfall}
 \usage{
-ES(object, alpha=0.05, V=1
-     , type="deterministic", method="full", of="portfolio"
-     , from=NULL, until=NULL, which=NULL
-     , scaling.periods=NULL, include.weights=T
-     , include.costs=T, use.backtest=F)
+\S4method{ES}{Strategy}(object, alpha = 0.05, V = 1,
+  type = c("normal.distribution", "historical"), method = c("full",
+  "linear"), of = c("portfolio", "assets"), from = NULL, until = NULL,
+  which = NULL, scaling.periods = NULL, include.weights = T,
+  include.costs = T, use.backtest = F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -18,9 +18,9 @@ ES(object, alpha=0.05, V=1
 
 \item{V}{Volume that is invested. The linear factor for the ES calculation. Either a single value for portfolio or a vector for each asset.}
 
-\item{type}{Type of ES calculation. Use \code{normal.distribution} for the normal distribution, \code{historical} for the empirical distribution. Default value is \code{historical}.}
+\item{type}{Type of ES calculation. Use \code{normal.distribution} for the normal distribution, \code{historical} for the empirical distribution.}
 
-\item{method}{Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns. Default value is \code{full}.}
+\item{method}{Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns.}
 
 \item{of}{ES to be calculated for assets separately or the portfolio.}
 

@@ -393,7 +393,7 @@ setMethod(f = "VaR",
 # Value at Risk calculation
 setGeneric(name = "ES",
            def = function(object, alpha=0.05, V=1
-                          , type="deterministic", method="full", of="portfolio"
+                          , type="normal.distribution", method="full", of="portfolio"
                           , from=NULL, until=NULL, which=NULL
                           , scaling.periods=NULL, include.weights=T, include.costs=T, use.backtest=F) {
              standardGeneric("ES")
@@ -405,16 +405,11 @@ setGeneric(name = "ES",
 #' @aliases ES
 #' @title Expected Shortfall
 #' @description Expected Shortfall of the assets or portfolio of an object of class \code{Strategy}.
-#' @usage ES(object, alpha=0.05, V=1
-#'      , type="deterministic", method="full", of="portfolio"
-#'      , from=NULL, until=NULL, which=NULL
-#'      , scaling.periods=NULL, include.weights=T
-#'      , include.costs=T, use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
 #' @param V Volume that is invested. The linear factor for the ES calculation. Either a single value for portfolio or a vector for each asset. 
-#' @param type Type of ES calculation. Use \code{normal.distribution} for the normal distribution, \code{historical} for the empirical distribution. Default value is \code{historical}.
-#' @param method Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns. Default value is \code{full}.
+#' @param type Type of ES calculation. Use \code{normal.distribution} for the normal distribution, \code{historical} for the empirical distribution.
+#' @param method Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns. 
 #' @param of ES to be calculated for assets separately or the portfolio.
 #' @param which Names or number of assets that should be included in calculation.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which losses shall be considered. If \code{NULL}, no restriction is made.
@@ -438,7 +433,7 @@ setGeneric(name = "ES",
 #' ## End(Not run)
 setMethod(f = "ES",
           signature = "Strategy",
-          definition = function(object, alpha, V, type=c("historical", "normal.distribution")
+          definition = function(object, alpha, V, type=c("normal.distribution", "historical")
                                 , method=c("full", "linear"),  of=c("portfolio", "assets")
                                 , from, until, which, scaling.periods, include.weights, include.costs, use.backtest) {
             of <- match.arg(of)
