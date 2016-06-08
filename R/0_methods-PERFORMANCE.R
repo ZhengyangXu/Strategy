@@ -465,7 +465,7 @@ setMethod(f = "ES",
                 # for each alpha integrate from VaR(alpha) to Inf
                 sapply(alpha, FUN=function(a) {
                   VaR <- qnorm(1-a, mean=mu, sd=sigma)
-                  integrate(xdnorm, VaR, Inf, mean=mu, sd=sigma, subdivisions = 1E6)$value / a
+                  integrate(xdnorm, VaR, Inf, mean=mu, sd=sigma, subdivisions = 1E6, stop.on.error = FALSE)$value / a
                 })
               }), ncol=ncol(L))
             }
