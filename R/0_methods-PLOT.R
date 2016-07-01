@@ -451,8 +451,8 @@ setMethod(f = "plotWeights",
   
   
   # data
-  weights <- abs(getWeights(object))
-  signals <- getSignals(object)
+  weights <- abs(getWeights(object, from=from, until=until))
+  signals <- getSignals(object, from=from, until=until)
   col <- rainbow(ncol(weights))
   
   mar <- c(7, 4.1, 4.1, 2.1)
