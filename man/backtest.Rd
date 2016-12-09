@@ -3,11 +3,18 @@
 \docType{methods}
 \name{backtest}
 \alias{backtest}
+\alias{backtest,Strategy-method}
 \title{Backtest Strategy}
 \usage{
-backtest(object, horizon="6m", data.width="24m", keep.history=F
-     , optim.param=NULL, optim.param.min=1, optim.param.max=10, optim.param.scale=.1
-     , which=NULL, from=NULL, until=NULL, rf=0, printSteps=F)
+backtest(object, horizon = "6m", data.width = "24m", keep.history = F,
+  optim.param = NULL, optim.param.min = 1, optim.param.max = 10,
+  optim.param.scale = 0.1, from = NULL, until = NULL, which = NULL,
+  rf = 0, printSteps = F)
+
+\S4method{backtest}{Strategy}(object, horizon = "6m", data.width = "24m",
+  keep.history = F, optim.param = NULL, optim.param.min = 1,
+  optim.param.max = 10, optim.param.scale = 0.1, from = NULL,
+  until = NULL, which = NULL, rf = 0, printSteps = F)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -42,11 +49,19 @@ Walk forward analysis backtest with the specified parameters on an object of cla
 \examples{
 ##Not run:
 # MA(200)-Strategy
-params <- list(k=200)
-myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
+params <- list(k=20)
+# reduce dataset due to computation time
+assets_r <- assets[tail(index(assets),100)]
+myStrat.MA <- Strategy(assets=assets_r, strat="MA", strat.params=params)
 
-# Perform backtest on MA(200)-Strategy with out-of-sample periods of 3 months and in-sample-calibration of 12 months
-backtest(myStrat.MA, horizon="3m", data.width="12m", optim.param="k", optim.param.min=50, optim.param.max=250, optim.param.scale=10, from="2002-01-01", until="2015-12-31")
+# Perform backtest on MA(20)-Strategy with
+# out-of-sample periods of 2 months
+# and in-sample-calibration of 2 months
+# This example requires a lot of computation time,
+# so this is only performed for 1 asset and high scaling.
+backtest(myStrat.MA, horizon="2m", data.width="2m"
+         , optim.param="k", optim.param.min=5, optim.param.max=10
+         , optim.param.scale=5, printSteps = TRUE, which=1)
 ##End(Not run)
 }
 

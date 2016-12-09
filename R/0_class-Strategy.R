@@ -8,11 +8,34 @@
 
 #' @import xts
 #' @import zoo
+#' @import methods
+#' @importFrom grDevices rainbow
+#' @importFrom graphics plot abline arrows axis barplot layout legend lines par rect text
+#' @importFrom stats end lag na.omit qnorm dnorm quantile sd start time
+#' @importFrom utils head
+
 
 setOldClass("xts") # formally declare S3 class
 setClassUnion("funNULL", members = c("function","NULL")) # function or NULL for plotFUN slot
 
 # CLASS DEFINITION ------------------------------------------------
+#' @title \code{Strategy}-Class
+#' @description An S4 class to store quantitative strategies and compute various performance figures.
+#' @slot prices Price data of the assets. If return data was given within the constructor, starti
+#' @slot weights Time series of class \code{xts} indicating rowwise weights of the assets.
+#' @slot indicators List of indicators of class \code{xts}.
+#' @slot strat Name of the strategy function to be called. Could be a full file path to a custom strategy.
+#' @slot strat.params List of parameters as input for the strategy function. List entry names should match parameter names.
+#' @slot stratFUN Contains the custom strategy function or \code{NULL}.
+#' @slot plotFUN Contains the custom strategy function or \code{NULL}.
+#' @slot filters List with filtered price data (e.g. MA(200)-data).
+#' @slot signals Time series with trading signals of class \code{xts}.
+#' @slot backtest.signals Time series with trading signals of the backtest of class \code{xts}.
+#' @slot backtest.parameters List of parameters of the backtest.
+#' @slot backtest.setup Matrix showing the backtest preferences.
+#' @slot volume Numeric vector indicating the initial investment volume per asset.
+#' @slot costs.fix Numeric vector indicating the fixed costs per trade per asset.
+#' @slot costs.rel Numeric vector indicating the relative costs per trade per asset.
 setClass(Class="Strategy",
          slots = list(
            # input
@@ -50,13 +73,15 @@ setClass(Class="Strategy",
 
 
 #' @export
+#' @name Strategy
 #' @aliases Strategy
 #' @title Create Strategy Object
 #' @description Creates an object of class \code{Strategy} with the given portfolio data and strategy-function.
-#' @usage Strategy(assets, strat
-#'     assetValueType = "price", weights = NULL, indicators = NULL,
-#'     strat.params = NULL, costs = NULL,
-#'     printSteps = F)
+#' @usage Strategy(assets, strat = "buyhold"
+#'      , assetValueType = c("price", "logReturn"), weights = NULL, indicators = list()
+#'      , strat.params = list(), volume = 1000000
+#'      , costs.fix = 0, costs.rel = 0
+#'      , printSteps = FALSE)
 #' @param assets Time series of class \code{xts} of asset values in either price or log return form on
 #' which the strategy function shall be applied. This is the portfolio of assets.
 #' @param strat The name of the strategy that should be applied. This can be either a
@@ -67,8 +92,8 @@ setClass(Class="Strategy",
 #' @param weights The portfolio weights for the given assets as time series (dynamic) or numerical (constant) weights.
 #' @param indicators A list of indicators that might be used within customized strategies. It is recommended to pass a named list.
 #' @param strat.params The list of parameters and their values required by the strategy function selected with parameter strat.
-#' @param volume Portfolio volume for trading. Default value is \code{100000}.
-#' @param costs.fix The fix trading costs per trade. 
+#' @param volume Portfolio volume for trading. Default value is 1 Million.
+#' @param costs.fix The fix trading costs per trade.
 #' @param costs.rel The trading costs, relative to the volume. I.e. a value of \code{10E-4} reflects the costs of 10 basis points of the traded volume.
 #' @param printSteps This is a feature used mainly for debugging the constructor function in order to localize where unspecified errors occur. If set to true, the different steps run within the constructor is printed to the console.
 #' @examples
@@ -79,7 +104,7 @@ setClass(Class="Strategy",
 #' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 #'
 #' # Own MA-strategy-function
-#' myStrat.MA <- Strategy(assets=assets, strat="C:/MA_function.R")
+#' # myStrat.MA <- Strategy(assets=assets, strat="C:/MA_function.R")
 #'
 #' ##End (Not run)
 Strategy <- function(assets,
@@ -88,10 +113,10 @@ Strategy <- function(assets,
                      weights = NULL,
                      indicators = list(),
                      strat.params = list(),
-                     volume = 100000,
+                     volume = 1000000,
                      costs.fix = 0,
                      costs.rel = 0,
-                     printSteps = F) {
+                     printSteps = FALSE) {
 
   # VALIDATIONS
   # -------------------------------
@@ -105,10 +130,10 @@ Strategy <- function(assets,
     assets <- na.omit(na.locf(assets))
     message("NA found in prices. Replaced with prior and cut if within first value(s). See na.locf() and na.omit() documentation.")
   }
-  
+
   # CHECK assetValueType (match.arg has its own algo to check)
   assetValueType <- match.arg(assetValueType)
-  
+
   if (printSteps==T) print("Assets checked.")
 
   # CHECK Asset Weights
@@ -155,7 +180,7 @@ Strategy <- function(assets,
         } else if (ncol(indicators[[i]])!=1) {
           indicators[[i]] <- indicators[[i]][,1]
           warning("Please provide all indicators within ist as UNIVARIATE xts format! Only first column will be used.")
-        } 
+        }
       }
     }
   }
@@ -178,11 +203,11 @@ Strategy <- function(assets,
   }, error = function(e) stop(paste0("Strategy ", strat, " could not be found. Consult Strategy()-documentation for available strategies.")) )
   tryCatch({
     plotFUN <- get(paste0("plot.", tolower(strat)), envir = environment(Strategy))
-  }, error = function(e) {}#message("No plot function defined. Generic plotting will be used. This is just an information.") 
+  }, error = function(e) {}#message("No plot function defined. Generic plotting will be used. This is just an information.")
     )
 
   if (printSteps==T) print("Strategy function(s) checked.")
-  
+
   # VOLUME
   if (!is.numeric(volume) || length(costs.fix) != 1)
     stop("Argument volume must be a single numeric value!")
@@ -191,10 +216,10 @@ Strategy <- function(assets,
   if (!is.numeric(costs.fix) || length(costs.fix) != 1)
     stop("Argument costs.fix must be a single numeric value!")
   if (!is.numeric(costs.rel) || length(costs.rel) != 1)
-    stop("Argument costs.rel must be a single numeric value!") 
-  
-  
-  
+    stop("Argument costs.rel must be a single numeric value!")
+
+
+
 
 
   # PREPARE ASSET TYPES
@@ -206,10 +231,10 @@ Strategy <- function(assets,
   if (assetValueType == "price")
     prices <- assets
   # no prices <= 0
-  if (length(which(assets<=0)) > 0) 
+  if (length(which(assets<=0)) > 0)
     message("Asset values < 0 found. With value type 'prices' this is unusual. This might fail in log return calculation!")
-  
-  
+
+
   if (printSteps==T) print("Prices set")
 
 
@@ -228,24 +253,24 @@ Strategy <- function(assets,
   weights <- abs(as.xts(strat.Out[["weights"]]))#as.xts and xts() to prevent conversion probs, absolute weights due to sign in SIGNAL!
   weights <- xts(weights, order.by=as.Date(index(weights), tz=""))
   indicators <- strat.Out[["indicators"]]
-  
-  if (!is.list(indicators) || length(names(indicators)) != length(indicators)) 
+
+  if (!is.list(indicators) || length(names(indicators)) != length(indicators))
     stop("There must be an indicators output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
-  if (!is.list(filters) || length(names(filters)) != length(filters)) 
+  if (!is.list(filters) || length(names(filters)) != length(filters))
     stop("There must be a filter output list of the strategy function within which all list entries are named! Can be simply an empty list()-object.")
-  
+
     # Ensure same date format
   # index(prices) <- as.Date(index(prices), tz="")
   # index(signals) <- as.Date(index(signals), tz="")
   # index(weights) <- as.Date(index(weights), tz="")
-  
+
   # Ensure time consistency
   weights <- weights[index(signals)]
-  
+
   # check date compatibility
   if (sum(index(signals) %in% index(prices)) == 0) warning("Signals and prices indexes do not match at all!")
   if (sum(index(weights) %in% index(prices)) == 0) warning("Signals and weight indexes do not match at all!")
-  
+
 
   if (printSteps==T) print("Strategy function executed.")
 

@@ -3,9 +3,13 @@
 \docType{methods}
 \name{getPrices}
 \alias{getPrices}
+\alias{getPrices,Strategy-method}
 \title{Get price data from \code{Strategy}-object}
 \usage{
-getPrices(object, from=NULL, until=NULL, which=NULL)
+getPrices(object, from = NULL, until = NULL, which = NULL)
+
+\S4method{getPrices}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

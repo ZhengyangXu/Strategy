@@ -3,11 +3,17 @@
 \docType{methods}
 \name{plotDrawdowns}
 \alias{plotDrawdowns}
+\alias{plotDrawdowns,Strategy-method}
 \title{Plot Strategy Drawdowns}
 \usage{
-plotDrawdowns(object, which=NULL, from=NULL, until=NULL
-     , of="portfolio", use.backtest=F
-     , include.costs=T, returnValues=F, ...)
+plotDrawdowns(object, from = NULL, until = NULL, which = NULL,
+  of = "portfolio", type = "relative", include.costs = TRUE,
+  use.backtest = FALSE, returnValues = FALSE, ...)
+
+\S4method{plotDrawdowns}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL, of = c("portfolio", "assets"), type = c("relative",
+  "absolute"), include.costs = TRUE, use.backtest = FALSE,
+  returnValues = FALSE, ...)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -44,7 +50,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 plotDrawdowns(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 # Plot backtested MA(200)-Strategy drawdowns
-plotDrawdowns(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=T)
+# plotDrawdowns(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=TRUE)
 
 ##End(Not run)
 }

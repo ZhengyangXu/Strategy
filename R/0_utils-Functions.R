@@ -6,7 +6,9 @@
 #' @aliases newStrategyFunction
 #' @title Create Own Strategy
 #' @description Creates a strategy functin template file. This file can be used as template for the development of customized strategies.
-#' @usage newStrategyFunction(name=NULL, file.path=getwd(), overwrite=F)
+#' @param name String as name of the new function (without spaces).
+#' @param file.path Valid file path of existing directory where the new function shall be stored in format file.path/name.R.
+#' @param overwrite If the strategy file already exists, it will be overwritten if value is \code{TRUE}.
 #' @examples
 #' ##Not run:
 #'
@@ -14,8 +16,7 @@
 #' newStrategyFunction(name="myNewStrat", file.path=getwd(), overwrite=T)
 #'
 #' ##End(Not run)
-#'
-newStrategyFunction <- function(name=NULL, file.path=getwd(), overwrite=F) {
+newStrategyFunction <- function(name=NULL, file.path=getwd(), overwrite=FALSE) {
   if (is.null(name)) stop("Please define function name!")
   if (!file.exists(file.path)) stop("Please define valid directory to store function in!")
   file.to <- paste0(file.path, "/", name, ".R")
@@ -61,9 +62,9 @@ getEnv <- function(x) {
 validWhich <- function(which, data) {
   if (is.null(data) || (!is.xts(data) && !is.list(data)))
     stop("Please provide data as list or xts!")
-  
+
   which.out <- NULL
-  
+
   # select valid which arguments to which.out for either list or xts
   if (is.list(data)) {
     if (length(data) == 0) return(NULL)
@@ -82,9 +83,9 @@ validWhich <- function(which, data) {
       which.out <- 1:ncol(data)
     } else if (is.character(which)) {
       which.out <- colnames(data)[tolower(colnames(data)) %in% tolower(which)]
-    }   
+    }
   }
-  
+
   # verification
   if (length(which.out) == 0)
     stop("Which values all invalid!")
@@ -92,7 +93,7 @@ validWhich <- function(which, data) {
   if (!is.null(which) && length(which) != length(which.out))
     warning(paste0("Which values have been removed because there was no such data/-number: "
                    , paste0(which[which(! which %in% which.out)], collapse=", ")))
-  
+
   # return
   return(which.out)
 }
@@ -132,7 +133,7 @@ validWhich <- function(which, data) {
   if (!is.xts(data)) stop("Please provide data as xts!")
   freq <- periodicity(data[,1])$scale
   scalevec <- rep(1, ncol(data))
-  switch(freq, 
+  switch(freq,
          minute = {
            stop("Data periodicity too high")
          }, hourly = {

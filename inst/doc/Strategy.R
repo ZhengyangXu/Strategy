@@ -2,7 +2,7 @@
 require(Strategy)
 
 # Generate positive random walks for random assets
-set.seed(1)
+set.seed(2)
 len <- 1000
 n <- 10
 assets <- abs(apply(matrix(rnorm(n*len), ncol=n), 2, cumsum)) + 100
@@ -17,5 +17,5 @@ myStrat.MA200 <- Strategy(assets = assets
 
 ## ---- echo=FALSE, results='asis'-----------------------------------------
 # Plot MA(200)-strategy of first asset
-plot(myStrat.MA200, which=1)
+plot(myStrat.MA200, which.assets=1, from="2015-01-01", main="HA")
 

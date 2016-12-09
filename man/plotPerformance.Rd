@@ -3,12 +3,18 @@
 \docType{methods}
 \name{plotPerformance}
 \alias{plotPerformance}
+\alias{plotPerformance,Strategy-method}
 \title{Plot Strategy Performance}
 \usage{
-plotPerformance(object, which=NULL, of="portfolio", from=NULL, until=NULL
-     , use.backtest=F, include.costs=T
-     , plot.params=T , plot.params.names=NULL, plot.params.first=T
-     , ...)
+plotPerformance(object, which = NULL, of = "portfolio", from = NULL,
+  until = NULL, use.backtest = FALSE, include.costs = TRUE,
+  plot.params = TRUE, plot.params.names = NULL, plot.params.first = TRUE,
+  ...)
+
+\S4method{plotPerformance}{Strategy}(object, which = NULL,
+  of = c("portfolio", "assets"), from = NULL, until = NULL,
+  use.backtest = FALSE, include.costs = TRUE, plot.params = TRUE,
+  plot.params.names = NULL, plot.params.first = TRUE, ...)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -47,7 +53,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 plotPerformance(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 # Plot backtested MA(200)-Strategy
-plotPerformance(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=T)
+# plotPerformance(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=TRUE)
 
 ##End(Not run)
 }

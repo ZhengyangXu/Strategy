@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getStratFUN}
 \alias{getStratFUN}
+\alias{getStratFUN,Strategy-method}
 \title{Get strategy function from \code{Strategy}-object}
 \usage{
 getStratFUN(object)
+
+\S4method{getStratFUN}{Strategy}(object)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

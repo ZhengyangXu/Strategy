@@ -3,11 +3,16 @@
 \docType{methods}
 \name{compare}
 \alias{compare}
+\alias{compare,Strategy-method}
 \title{Compare performance of \code{Strategy}-objects.}
 \usage{
+compare(..., from=NULL, until=NULL, which=NULL
+       , scaling.periods=NULL, include.costs=TRUE
+       , use.backtest=FALSE, include.params=FALSE)
+
 \S4method{compare}{Strategy}(..., from = NULL, until = NULL, which = NULL,
-  scaling.periods = NULL, include.costs = T, use.backtest = F,
-  include.params = F)
+  scaling.periods = NULL, include.costs = TRUE, use.backtest = FALSE,
+  include.params = FALSE)
 }
 \arguments{
 \item{...}{Objects of class \code{Strategy}.}
@@ -20,7 +25,7 @@
 
 \item{scaling.periods}{Vector with annualization factors for calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.}
 
-\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
+\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is obsolete if no costs are given.}
 
 \item{use.backtest}{If \code{TRUE}, the performance of the backtesting output is considered for performance indicator calculation. If \code{FALSE}, the performance of the initial strategy execution are used.}
 
@@ -41,7 +46,7 @@ params <- list(lambda=0.05)
 myStrat.EWMA <- Strategy(assets=assets, strat="EWMA", strat.params=params)
 
 # Compare annualized performance of MA(200) and EWMA(0.05)
-compare(myStrat.MA, myStrat.EWMA, from="2015-01-01", until="2015-12-31", use.backtest=T, scaling.periods=252)
+# compare(myStrat.MA, myStrat.EWMA, use.backtest=TRUE, scaling.periods=252)
 
 ##End(Not run)
 }

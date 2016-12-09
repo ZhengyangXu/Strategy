@@ -3,9 +3,12 @@
 \docType{methods}
 \name{plotWeights}
 \alias{plotWeights}
+\alias{plotWeights,Strategy-method}
 \title{Plot Strategy Weights}
 \usage{
-plotWeights(object, from=NULL, until=NULL, ...)
+plotWeights(object, from = NULL, until = NULL, ...)
+
+\S4method{plotWeights}{Strategy}(object, from = NULL, until = NULL, ...)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -21,6 +24,11 @@ Plots the weights of the portfolio of an object of class \code{Strategy}.
 }
 \examples{
 ##Not run:
+
+# MA(200)-Strategy
+params <- list(k=200)
+myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
+
 # Plot MA(200)-Strategy weights
 plotWeights(myStrat.MA)
 

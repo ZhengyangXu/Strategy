@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getCosts}
 \alias{getCosts}
+\alias{getCosts,Strategy-method}
 \title{Get strategy function from \code{Strategy}-object}
 \usage{
 getCosts(object)
+
+\S4method{getCosts}{Strategy}(object)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

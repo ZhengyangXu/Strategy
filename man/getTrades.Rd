@@ -2,12 +2,15 @@
 % Please edit documentation in R/0_methods-GET.R
 \docType{methods}
 \name{getTrades}
-\alias{getPrices}
 \alias{getTrades}
+\alias{getTrades,Strategy-method}
 \title{Get trades according to the signals from the \code{Strategy}-object}
 \usage{
-getTrades(object, from=NULL, until=NULL, which=NULL
-       , use.backtest=FALSE)
+getTrades(object, from = NULL, until = NULL, which = NULL,
+  of = "signals", use.backtest = FALSE)
+
+\S4method{getTrades}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL, of = c("signals", "weights"), use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

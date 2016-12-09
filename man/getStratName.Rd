@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getStratName}
 \alias{getStratName}
+\alias{getStratName,Strategy-method}
 \title{Get strategy function name from \code{Strategy}-object}
 \usage{
-getStratName(object, include.params=F)
+getStratName(object, include.params = FALSE)
+
+\S4method{getStratName}{Strategy}(object, include.params = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -24,7 +27,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 
 # Get strategy function name from MA(200)-Strategy
 getStratName(myStrat.MA) # returns "MA"
-getStratName(myStrat.MA, include.params=T) # returns "MA(200)"
+getStratName(myStrat.MA, include.params=TRUE) # returns "MA(200)"
 
 ##End(Not run)
 }

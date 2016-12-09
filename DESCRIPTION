@@ -1,16 +1,22 @@
 Package: Strategy
 Type: Package
-Title: Strategy
-Version: 0.0.0.9000
-Date: 2016-02-03
-Author: J.Busch
-Maintainer: J.Busch <jb@quants.ch>
+Title: Generic Framework to Analyze Trading Strategies
+Version: 1.0.0
+Date: 2016-12-07
+Author: Julian Busch
+Maintainer: Julian Busch <jb@quants.ch>
 Depends:
     R (>= 3.2.0),
     xts,
-    zoo
-Description: This package allows users to build and test customized
-    quantitative trading strategies.
+    zoo,
+    methods,
+    graphics,
+    grDevices,
+    stats,
+    utils
+Description: Users can build and test customized quantitative trading strategies. Some quantitative trading strategies are already implemented, e.g. various moving-average filters with trend following approaches.
+    The implemented class called "Strategy" allows users to access several methods to analyze performance figures, plots and backtest the strategies.
+    Furthermore, custom strategies can be added, a generic template is available. The custom strategies require a certain input and output so they can be called from the Strategy-constructor.
 License: GPL
 LazyData: TRUE
 Suggests:

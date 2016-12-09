@@ -3,12 +3,20 @@
 \docType{methods}
 \name{getIndicators}
 \alias{getIndicators}
+\alias{getIndicators,Strategy-method}
 \title{Get indicators from \code{Strategy}-object}
 \usage{
-getIndicators(object, from=NULL, until=NULL, which=NULL)
+getIndicators(object, from = NULL, until = NULL, which = NULL)
+
+\S4method{getIndicators}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
+
+\item{from}{The date in character format \code{"yyyy-MM-dd"} or as date-object from which indicators shall be returned. If \code{NULL}, no restriction is made.}
+
+\item{until}{The date in character format \code{"yyyy-MM-dd"} or as date-object until which indicators shall be returned. If \code{NULL}, no restriction is made.}
 
 \item{which}{Names or list-number of indicators that should be included. If \code{NULL}, all indicators are returned.}
 }
@@ -20,7 +28,9 @@ Gets the indicators data of an object of class \code{Strategy} that was used wit
 
 # MA(200)-Strategy
 params <- list(k=200)
-indicators <- list(volume=volume) # example: volume of trades
+randreturns <- xts(rnorm(nrow(assets)), order.by=
+seq(from=Sys.Date()-nrow(assets)+1, to=Sys.Date(), by="d"))
+indicators <- list(returns=randreturns) # example: random returns
 myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params, indicators=indicators)
 
 # Get indicator data from MA(200)-Strategy

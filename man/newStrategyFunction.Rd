@@ -4,7 +4,14 @@
 \alias{newStrategyFunction}
 \title{Create Own Strategy}
 \usage{
-newStrategyFunction(name=NULL, file.path=getwd(), overwrite=F)
+newStrategyFunction(name = NULL, file.path = getwd(), overwrite = FALSE)
+}
+\arguments{
+\item{name}{String as name of the new function (without spaces).}
+
+\item{file.path}{Valid file path of existing directory where the new function shall be stored in format file.path/name.R.}
+
+\item{overwrite}{If the strategy file already exists, it will be overwritten if value is \code{TRUE}.}
 }
 \description{
 Creates a strategy functin template file. This file can be used as template for the development of customized strategies.
@@ -16,6 +23,5 @@ Creates a strategy functin template file. This file can be used as template for 
 newStrategyFunction(name="myNewStrat", file.path=getwd(), overwrite=T)
 
 ##End(Not run)
-
 }
 

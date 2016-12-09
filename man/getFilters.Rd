@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getFilters}
 \alias{getFilters}
+\alias{getFilters,Strategy-method}
 \title{Get strategy values from \code{Strategy}-object}
 \usage{
-getFilters(object)
+getFilters(object, which = NULL)
+
+\S4method{getFilters}{Strategy}(object, which = NULL)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

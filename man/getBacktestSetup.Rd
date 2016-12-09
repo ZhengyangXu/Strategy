@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getBacktestSetup}
 \alias{getBacktestSetup}
+\alias{getBacktestSetup,Strategy-method}
 \title{Get backtest parameter values from \code{Strategy}-object}
 \usage{
 getBacktestSetup(object)
+
+\S4method{getBacktestSetup}{Strategy}(object)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

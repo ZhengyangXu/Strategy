@@ -3,11 +3,17 @@
 \docType{methods}
 \name{hitratio}
 \alias{hitratio}
+\alias{hitratio,Strategy-method}
 \title{Strategy Hit Ratio}
 \usage{
+hitratio(object, of="portfolio"
+       , from=NULL, until=NULL, which=NULL
+       , type="per.signal", include.costs=TRUE
+       , use.backtest=FALSE)
+
 \S4method{hitratio}{Strategy}(object, of = c("portfolio", "assets"),
   from = NULL, until = NULL, which = NULL, type = c("per.signal",
-  "per.trade"), include.costs = T, use.backtest = F)
+  "per.trade"), include.costs = TRUE, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -22,7 +28,7 @@
 
 \item{type}{If the hitratio shall be calculated per trade with \code{per.trade} or per signal \code{per.signal}.}
 
-\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
+\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is obsolete if no costs are given.}
 
 \item{use.backtest}{If set to \code{TRUE}, the signals from the backtesting output are considered for maximum drawdown calculation. If \code{FALSE}, the signals from the initial strategy execution are used.}
 }
@@ -40,7 +46,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 hitratio(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 # Get hit ratio of MA(200)-Strategy (daily data = 252 trading days)
-hitratio(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=T)
+# hitratio(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=TRUE)
 
 ## End(Not run)
 }

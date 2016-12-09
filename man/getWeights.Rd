@@ -3,9 +3,14 @@
 \docType{methods}
 \name{getWeights}
 \alias{getWeights}
+\alias{getWeights,Strategy-method}
 \title{Get weights from \code{Strategy}-object}
 \usage{
-getWeights(object, from=NULL, until=NULL, which=NULL)
+getWeights(object, from = NULL, until = NULL, which = NULL,
+  use.backtest = FALSE)
+
+\S4method{getWeights}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

@@ -1,15 +1,7 @@
-setGeneric(name = "getPrices",
-           def = function(object, from=NULL, until=NULL, which=NULL) {
-             standardGeneric("getPrices")
-           }
-)
-
 #' @export
 #' @name getPrices
-#' @aliases getPrices
 #' @title Get price data from \code{Strategy}-object
 #' @description Gets the price data of an object of class \code{Strategy} that was used within strategy calculation.
-#' @usage getPrices(object, from=NULL, until=NULL, which=NULL)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or column-number of assets that should be included. If \code{NULL}, all prices are returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which prices shall be returned. If \code{NULL}, no restriction is made.
@@ -25,13 +17,22 @@ setGeneric(name = "getPrices",
 #' getPrices(myStrat.MA, from="2015-01-01", until="2015-12-31")
 #'
 #' ##End(Not run)
+setGeneric(name = "getPrices",
+           def = function(object, from=NULL, until=NULL, which=NULL) {
+             standardGeneric("getPrices")
+           }
+)
+
+
+#' @rdname getPrices
+#' @aliases getPrices,Strategy-method
 setMethod(f = "getPrices",
           signature = "Strategy",
           definition = function(object, from, until, which) {
-            
+
             # get all prices
             prices <- object@prices
-            
+
             # set dates
             if (is.null(from)) {
               from <- start(prices)
@@ -46,29 +47,23 @@ setMethod(f = "getPrices",
             } else {
               until <- as.Date(until)
             }
-            
+
             # validate which values
             which.out <- validWhich(which, prices)
-            
+
             # restrict prices to range
             prices <- prices[paste0(from,"::",until), which.out]
-            
+
             return(prices)
           }
 )
 
-setGeneric(name = "getWeights",
-           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=FALSE) {
-             standardGeneric("getWeights")
-           }
-)
+
 
 #' @export
 #' @name getWeights
-#' @aliases getWeights
 #' @title Get weights from \code{Strategy}-object
 #' @description Gets the weights data of an object of class \code{Strategy} that was used within strategy calculation.
-#' @usage getWeights(object, from=NULL, until=NULL, which=NULL)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or column-number of assets that should be included. If \code{NULL}, all weights are returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which weights shall be returned If \code{NULL}, no restriction is made.
@@ -85,13 +80,22 @@ setGeneric(name = "getWeights",
 #' getWeights(myStrat.MA, from="2015-01-01", until="2015-12-31")
 #'
 #' ##End(Not run)
+setGeneric(name = "getWeights",
+           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=FALSE) {
+             standardGeneric("getWeights")
+           }
+)
+
+
+#' @rdname getWeights
+#' @aliases getWeights,Strategy-method
 setMethod(f = "getWeights",
           signature = "Strategy",
           definition = function(object, from, until, which, use.backtest) {
-            
+
             # get all weights
             weights <- object@weights
-            
+
             # set dates
             if (is.null(from)) {
               from <- start(weights)
@@ -103,33 +107,26 @@ setMethod(f = "getWeights",
             } else {
               until <- as.Date(until)
             }
-            
+
             # validate which values
             which.out <- validWhich(which, weights)
-            
+
             # restrict weights to range
             weights <- weights[paste0(from,"::",until), which.out]
-            
+
             # reconstruct original weights
             weights <- weights * getSignals(object, from=from, until=until, which=which.out, use.backtest=use.backtest)[index(weights)]
-            
+
             return(weights)
           }
 )
 
-setGeneric(name = "getTrades",
-           def = function(object, from=NULL, until=NULL, which=NULL, of="signals", use.backtest=F) {
-             standardGeneric("getTrades")
-           }
-)
+
 
 #' @export
 #' @name getTrades
-#' @aliases getPrices
 #' @title Get trades according to the signals from the \code{Strategy}-object
 #' @description Gets the trades of an object of class \code{Strategy} that were performed within strategy calculation.
-#' @usage getTrades(object, from=NULL, until=NULL, which=NULL
-#'        , use.backtest=FALSE)
 #' @param object An object of class \code{Strategy}.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which trades shall be returned. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which trades shall be returned. If \code{NULL}, no restriction is made.
@@ -147,16 +144,25 @@ setGeneric(name = "getTrades",
 #' getTrades(myStrat.MA, from="2015-01-01", until="2015-12-31")
 #'
 #' ##End(Not run)
+setGeneric(name = "getTrades",
+           def = function(object, from=NULL, until=NULL, which=NULL, of="signals", use.backtest=FALSE) {
+             standardGeneric("getTrades")
+           }
+)
+
+
+#' @rdname getTrades
+#' @aliases getTrades,Strategy-method
 setMethod(f = "getTrades",
           signature = "Strategy",
           definition = function(object, from, until, which, of=c("signals","weights"), use.backtest) {
-            
+
             of <- match.arg(of)
-            
+
             # get all signals
             signals <- getSignals(object, from=from, until=until, which=which, use.backtest=use.backtest)
             if (of == "weights") signals <- signals * getWeights(object, from=from, until=until, which=which, use.backtest=use.backtest)[index(signals)]
-            
+
             # calculate trades based on differences of trading signals
             sigdiff <- abs(diff(signals, na.pad=TRUE))
             sigdiff[1,] <- 0
@@ -167,75 +173,74 @@ setMethod(f = "getTrades",
             coredata(trades)[which(sigdiff>0,arr.ind=T)] <- 1
             # 2 trades made (long/short change)
             coredata(trades)[which(longshort==2,arr.ind=T)] <- 2
- 
+
             return(trades)
           }
 )
 
 
-setGeneric(name = "getIndicators",
-           def = function(object, from=NULL, until=NULL, which=NULL) {
-             standardGeneric("getIndicators")
-           }
-)
 
 #' @export
 #' @name getIndicators
-#' @aliases getIndicators
 #' @title Get indicators from \code{Strategy}-object
 #' @description Gets the indicators data of an object of class \code{Strategy} that was used within strategy calculation.
-#' @usage getIndicators(object, from=NULL, until=NULL, which=NULL)
 #' @param object An object of class \code{Strategy}.
+#' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which indicators shall be returned. If \code{NULL}, no restriction is made.
+#' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which indicators shall be returned. If \code{NULL}, no restriction is made.
 #' @param which Names or list-number of indicators that should be included. If \code{NULL}, all indicators are returned.
 #' @examples
 #' ##Not run:
 #'
 #' # MA(200)-Strategy
 #' params <- list(k=200)
-#' indicators <- list(volume=volume) # example: volume of trades
+#' randreturns <- xts(rnorm(nrow(assets)), order.by=
+#' seq(from=Sys.Date()-nrow(assets)+1, to=Sys.Date(), by="d"))
+#' indicators <- list(returns=randreturns) # example: random returns
 #' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params, indicators=indicators)
 #'
 #' # Get indicator data from MA(200)-Strategy
 #' getIndicators(myStrat.MA, from="2015-01-01", until="2015-12-31")
 #'
 #' ##End(Not run)
+setGeneric(name = "getIndicators",
+           def = function(object, from=NULL, until=NULL, which=NULL) {
+             standardGeneric("getIndicators")
+           }
+)
+
+
+#' @rdname getIndicators
+#' @aliases getIndicators,Strategy-method
 setMethod(f = "getIndicators",
           signature = "Strategy",
           definition = function(object, from, until, which) {
-            
+
             if (is.character(which) && which == "none") return(list())
-            
+
             # get all indicators
             indicators <- object@indicators
-            
+
             # validate which values
             which.out <- validWhich(which=which, data=indicators)
-                   
+
             # restrict indicators to selected
             if (!is.null(which.out)) {
               indicators <- indicators[which.out]
             } else {
               indicators <- list()
             }
-            
+
             return(indicators)
           }
 )
 
 
-# Get strategy function that was applied
-setGeneric(name = "getStratFUN",
-           def = function(object) {
-             standardGeneric("getStratFUN")
-           }
-)
+
 
 #' @export
 #' @name getStratFUN
-#' @aliases getStratFUN
 #' @title Get strategy function from \code{Strategy}-object
 #' @description Gets the strategy function of an object of class \code{Strategy} that was used for strategy calculation.
-#' @usage getStratFUN(object)
 #' @param object An object of class \code{Strategy}.
 #' @examples
 #' ##Not run:
@@ -248,6 +253,15 @@ setGeneric(name = "getStratFUN",
 #' MA.FUN <- getStratFUN(myStrat.MA)
 #'
 #' ##End(Not run)
+setGeneric(name = "getStratFUN",
+           def = function(object) {
+             standardGeneric("getStratFUN")
+           }
+)
+
+
+#' @rdname getStratFUN
+#' @aliases getStratFUN,Strategy-method
 setMethod(f = "getStratFUN",
           signature = "Strategy",
           definition = function(object) {
@@ -256,19 +270,13 @@ setMethod(f = "getStratFUN",
 )
 
 
-# Name of strategy that was applied
-setGeneric(name = "getStratName",
-           def = function(object, include.params=F) {
-             standardGeneric("getStratName")
-           }
-)
+
 
 #' @export
 #' @name getStratName
 #' @aliases getStratName
 #' @title Get strategy function name from \code{Strategy}-object
 #' @description Gets the strategy function name of an object of class \code{Strategy} that was used for strategy calculation. This function is for aesthetical purposes only and does not have any numerical relevance.
-#' @usage getStratName(object, include.params=F)
 #' @param object An object of class \code{Strategy}.
 #' @param include.params If set to \code{TRUE}, the parameters used for strategy evaluation are included.
 #' @examples
@@ -280,9 +288,18 @@ setGeneric(name = "getStratName",
 #'
 #' # Get strategy function name from MA(200)-Strategy
 #' getStratName(myStrat.MA) # returns "MA"
-#' getStratName(myStrat.MA, include.params=T) # returns "MA(200)"
+#' getStratName(myStrat.MA, include.params=TRUE) # returns "MA(200)"
 #'
 #' ##End(Not run)
+setGeneric(name = "getStratName",
+           def = function(object, include.params=FALSE) {
+             standardGeneric("getStratName")
+           }
+)
+
+
+#' @rdname getStratName
+#' @aliases getStratName,Strategy-method
 setMethod(f = "getStratName",
           signature = "Strategy",
           definition = function(object, include.params) {
@@ -303,21 +320,12 @@ setMethod(f = "getStratName",
           }
 )
 
-# Returns parameters used for strategy
-# or (optimized) parameters used in backtest windows
-setGeneric(name = "getParameters",
-           def = function(object, use.backtest=F) {
-             standardGeneric("getParameters")
-           }
-)
 
 
 #' @export
 #' @name getParameters
-#' @aliases getParameters
 #' @title Get strategy function parameters from \code{Strategy}-object
 #' @description Gets the strategy function parameters of an object of class \code{Strategy} that were used for strategy calculation.
-#' @usage getStratFUN(object, use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param use.backtest If set to \code{TRUE}, the calibrated parameters of the backtest are returned. Requires \code{\link{backtest}} to be  executed first.
 #' @examples
@@ -331,6 +339,16 @@ setGeneric(name = "getParameters",
 #' getParameters(myStrat.MA)
 #'
 #' ##End(Not run)
+setGeneric(name = "getParameters",
+           def = function(object, use.backtest=FALSE) {
+             standardGeneric("getParameters")
+           }
+)
+
+
+
+#' @rdname getParameters
+#' @aliases getParameters,Strategy-method
 setMethod(f = "getParameters",
           signature = "Strategy",
           definition = function(object, use.backtest) {
@@ -343,25 +361,17 @@ setMethod(f = "getParameters",
             } else {
               stratFUN.params <- object@strat.params
             }
-            
+
             return(stratFUN.params)
           }
 )
 
-# Return trading signals
-setGeneric(name = "getSignals",
-           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=F) {
-             standardGeneric("getSignals")
-           }
-)
+
 
 #' @export
 #' @name getSignals
-#' @aliases getSignals
 #' @title Get trading signals from \code{Strategy}-object
 #' @description Gets the trading signals of an object of class \code{Strategy} that were output from strategy calculation.
-#' @usage getSignals(object, from=NULL, until=NULL, which=NULL
-#'        , use.backtest=F)
 #' @param object An object of class \code{Strategy}.
 #' @param which Names or column-number of assets that should be returned. If \code{NULL}, all signals are returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which signals shall be returned. If \code{NULL}, no restriction is made.
@@ -375,10 +385,21 @@ setGeneric(name = "getSignals",
 #' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 #'
 #' # Get signals from MA(200)-Strategy
-#' getSignals(myStrat.MA) # all signals returned
-#' getSignals(myStrat.MA which=c(1,2), use.backtest=T) # backtest signals for first two assets returned
+#' # all signals returned
+#' getSignals(myStrat.MA)
+#' # backtest signals for first two assets returned
+#' # getSignals(myStrat.MA, which=c(1,2), use.backtest=TRUE)
 #'
 #' ##End(Not run)
+setGeneric(name = "getSignals",
+           def = function(object, from=NULL, until=NULL, which=NULL, use.backtest=FALSE) {
+             standardGeneric("getSignals")
+           }
+)
+
+
+#' @rdname getSignals
+#' @aliases getSignals,Strategy-method
 setMethod(f = "getSignals",
           signature = "Strategy",
           definition = function(object, from, until, which, use.backtest) {
@@ -392,7 +413,7 @@ setMethod(f = "getSignals",
               signals <- object@signals
             }
             which <- validWhich(which, signals)
-            
+
             # set dates
             if (is.null(from)) {
               from <- start(signals)
@@ -407,30 +428,20 @@ setMethod(f = "getSignals",
             } else {
               until <- as.Date(until)
             }
-            
+
             # Date range
             signals <- na.omit(signals[paste0(from,"::",until),which])
-            
+
             return(signals)
           }
 )
 
-# Returns a list with strategy values
-# as xts objects
-# e.g. the MA-values and KAMA-values of the crossing KAMA strategy
-setGeneric(name = "getFilters",
-           def = function(object, which=NULL) {
-             standardGeneric("getFilters")
-           }
-)
 
 
 #' @export
 #' @name getFilters
-#' @aliases getFilters
 #' @title Get strategy values from \code{Strategy}-object
 #' @description Gets the strategy values of an object of class \code{Strategy} that were output from strategy calculation.
-#' @usage getFilters(object)
 #' @param object An object of class \code{Strategy}.
 #' @param which Which filters shall be returned. Either list number or names to be passed.
 #' @examples
@@ -444,42 +455,43 @@ setGeneric(name = "getFilters",
 #' getFilters(myStrat.MA) # all strategy values returned
 #'
 #' ##End(Not run)
+setGeneric(name = "getFilters",
+           def = function(object, which=NULL) {
+             standardGeneric("getFilters")
+           }
+)
+
+
+#' @rdname getFilters
+#' @aliases getFilters,Strategy-method
 setMethod(f = "getFilters",
           signature = "Strategy",
           definition = function(object, which) {
             filters <- object@filters
-            
+
             if (is.character(which) && which=="none") return(list())
 
             # validate which values
             which.out <- validWhich(which=which, data=filters)
-            
+
             # restrict indicators to selected
             if (!is.null(which.out)) {
               filters <- filters[which.out]
             } else {
               filters <- list()
             }
-            
-            
+
+
             return(filters)
           }
 )
 
-# Returns the matrix
-# of the setup of the backtest parameters
-setGeneric(name = "getBacktestSetup",
-           def = function(object) {
-             standardGeneric("getBacktestSetup")
-           }
-)
+
 
 #' @export
 #' @name getBacktestSetup
-#' @aliases getBacktestSetup
 #' @title Get backtest parameter values from \code{Strategy}-object
 #' @description Gets the backtest parameter values of an object of class \code{Strategy} that were used for backtesting the strategy. This includes the information about the parameters,
-#' @usage getBacktestSetup(object)
 #' @param object An object of class \code{Strategy}.
 #' @examples
 #' ##Not run:
@@ -492,6 +504,15 @@ setGeneric(name = "getBacktestSetup",
 #' getBacktestSetup(myStrat.MA)
 #'
 #' ##End(Not run)
+setGeneric(name = "getBacktestSetup",
+           def = function(object) {
+             standardGeneric("getBacktestSetup")
+           }
+)
+
+
+#' @rdname getBacktestSetup
+#' @aliases getBacktestSetup,Strategy-method
 setMethod(f = "getBacktestSetup",
           signature = "Strategy",
           definition = function(object) {
@@ -499,19 +520,12 @@ setMethod(f = "getBacktestSetup",
           }
 )
 
-# Get costs
-setGeneric(name = "getCosts",
-           def = function(object) {
-             standardGeneric("getCosts")
-           }
-)
+
 
 #' @export
 #' @name getCosts
-#' @aliases getCosts
 #' @title Get strategy function from \code{Strategy}-object
 #' @description Returns the fixed and relative trading costs of an object of class \code{Strategy}..
-#' @usage getCosts(object)
 #' @param object An object of class \code{Strategy}.
 #' @examples
 #' ##Not run:
@@ -528,6 +542,15 @@ setGeneric(name = "getCosts",
 #' MA.costs$relative
 #'
 #' ##End(Not run)
+setGeneric(name = "getCosts",
+           def = function(object) {
+             standardGeneric("getCosts")
+           }
+)
+
+
+#' @rdname getCosts
+#' @aliases getCosts,Strategy-method
 setMethod(f = "getCosts",
           signature = "Strategy",
           definition = function(object) {

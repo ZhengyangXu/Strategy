@@ -3,13 +3,20 @@
 \docType{methods}
 \name{VaR}
 \alias{VaR}
+\alias{VaR,Strategy-method}
 \title{Value at Risk}
 \usage{
+VaR(object, alpha=0.05, V=1, type="normal.distribution"
+       , method="full", of="portfolio"
+       , from=NULL, until=NULL, which=NULL
+       , scaling.periods=NULL, include.weights=TRUE
+       , include.costs=TRUE, use.backtest=FALSE)
+
 \S4method{VaR}{Strategy}(object, alpha = 0.05, V = 1,
   type = c("normal.distribution", "historical"), method = c("full",
   "linear"), of = c("portfolio", "assets"), from = NULL, until = NULL,
-  which = NULL, scaling.periods = NULL, include.weights = T,
-  include.costs = T, use.backtest = F)
+  which = NULL, scaling.periods = NULL, include.weights = TRUE,
+  include.costs = TRUE, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -34,7 +41,7 @@
 
 \item{include.weights}{Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered.}
 
-\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
+\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is obsolete if no costs are given.}
 
 \item{use.backtest}{If \code{TRUE}, the performance of the backtesting output is considered for VaR calculation. If \code{FALSE}, the performance of the initial strategy execution are used.}
 }
@@ -52,7 +59,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 VaR(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 # Get backtest VaR of MA(200)-Strategy
-VaR(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=T)
+# VaR(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=TRUE)
 
 ## End(Not run)
 }

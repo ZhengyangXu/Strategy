@@ -3,8 +3,14 @@
 \docType{methods}
 \name{loss}
 \alias{loss}
+\alias{loss,Strategy-method}
 \title{Get the losses of assets or portfolio over time.}
 \usage{
+loss(object, V=100, method="full", of="portfolio"
+       , from=NULL, until=NULL, which=NULL
+       , include.weights=TRUE, include.costs=TRUE
+       , use.backtest=FALSE)
+
 \S4method{loss}{Strategy}(object, V = 100, method = c("full", "linear"),
   of = c("portfolio", "assets"), from = NULL, until = NULL,
   which = NULL, include.weights = TRUE, include.costs = TRUE,
@@ -27,7 +33,7 @@
 
 \item{include.weights}{Only relevant if \code{of="assets"}: If \code{FALSE}, weights are all set to \code{1}. This might be necessary if only single stock performance without weighting shall be considered.}
 
-\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
+\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is obsolete if no costs are given.}
 
 \item{use.backtest}{If \code{TRUE}, the performance of the backtesting output is considered for loss calculation. If \code{FALSE}, the performance of the initial strategy execution are used.}
 }

@@ -4,10 +4,11 @@
 \alias{Strategy}
 \title{Create Strategy Object}
 \usage{
-Strategy(assets, strat
-    assetValueType = "price", weights = NULL, indicators = NULL,
-    strat.params = NULL, costs = NULL,
-    printSteps = F)
+Strategy(assets, strat = "buyhold"
+     , assetValueType = c("price", "logReturn"), weights = NULL, indicators = list()
+     , strat.params = list(), volume = 1000000
+     , costs.fix = 0, costs.rel = 0
+     , printSteps = FALSE)
 }
 \arguments{
 \item{assets}{Time series of class \code{xts} of asset values in either price or log return form on
@@ -26,7 +27,7 @@ asset value types, either one of the types has to be selected.}
 
 \item{strat.params}{The list of parameters and their values required by the strategy function selected with parameter strat.}
 
-\item{volume}{Portfolio volume for trading. Default value is \code{100000}.}
+\item{volume}{Portfolio volume for trading. Default value is 1 Million.}
 
 \item{costs.fix}{The fix trading costs per trade.}
 
@@ -45,7 +46,7 @@ params <- list(k=200)
 myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 
 # Own MA-strategy-function
-myStrat.MA <- Strategy(assets=assets, strat="C:/MA_function.R")
+# myStrat.MA <- Strategy(assets=assets, strat="C:/MA_function.R")
 
 ##End (Not run)
 }

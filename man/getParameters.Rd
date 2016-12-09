@@ -3,9 +3,12 @@
 \docType{methods}
 \name{getParameters}
 \alias{getParameters}
+\alias{getParameters,Strategy-method}
 \title{Get strategy function parameters from \code{Strategy}-object}
 \usage{
-getStratFUN(object, use.backtest=F)
+getParameters(object, use.backtest = FALSE)
+
+\S4method{getParameters}{Strategy}(object, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}

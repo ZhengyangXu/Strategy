@@ -3,10 +3,14 @@
 \docType{methods}
 \name{getSignals}
 \alias{getSignals}
+\alias{getSignals,Strategy-method}
 \title{Get trading signals from \code{Strategy}-object}
 \usage{
-getSignals(object, from=NULL, until=NULL, which=NULL
-       , use.backtest=F)
+getSignals(object, from = NULL, until = NULL, which = NULL,
+  use.backtest = FALSE)
+
+\S4method{getSignals}{Strategy}(object, from = NULL, until = NULL,
+  which = NULL, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -30,8 +34,10 @@ params <- list(k=200)
 myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 
 # Get signals from MA(200)-Strategy
-getSignals(myStrat.MA) # all signals returned
-getSignals(myStrat.MA which=c(1,2), use.backtest=T) # backtest signals for first two assets returned
+# all signals returned
+getSignals(myStrat.MA)
+# backtest signals for first two assets returned
+# getSignals(myStrat.MA, which=c(1,2), use.backtest=TRUE)
 
 ##End(Not run)
 }

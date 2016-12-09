@@ -3,12 +3,17 @@
 \docType{methods}
 \name{sharpe}
 \alias{sharpe}
+\alias{sharpe,Strategy-method}
 \title{Get Sharpe Ratio of Performance}
 \usage{
 sharpe(object, rf=0, of="portfolio"
-     , which=NULL, from=NULL, until=NULL
-     , scaling.periods=NULL, include.costs=T
-     , use.backtest=F)
+     , from=NULL, until=NULL, which=NULL
+     , scaling.periods=NULL, include.costs=TRUE
+     , use.backtest=FALSE)
+
+\S4method{sharpe}{Strategy}(object, rf = 0, of = c("portfolio", "assets"),
+  from = NULL, until = NULL, which = NULL, scaling.periods = NULL,
+  include.costs = TRUE, use.backtest = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
@@ -25,7 +30,7 @@ sharpe(object, rf=0, of="portfolio"
 
 \item{scaling.periods}{Vector with annualization factors for sharpe ratio calculation. Default is 252, 52, 12, 4, 1 for daily, weekly, monthly, quarterly and yearly data respectively.}
 
-\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
+\item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is obsolete if no costs are given.}
 
 \item{use.backtest}{If \code{TRUE}, the performance of the backtesting output is considered for sharpe ratio calculation. If \code{FALSE}, the performance of the initial strategy execution are used.}
 }
@@ -43,7 +48,7 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 sharpe(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 # Get backtest annualized sharpe of MA(200)-Strategy (daily data = 252 trading days)
-sharpe(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=T, scaling.periods=252)
+# sharpe(myStrat.MA, from="2015-01-01", until="2015-12-31", use.backtest=TRUE, scaling.periods=252)
 
 ## End(Not run)
 }
