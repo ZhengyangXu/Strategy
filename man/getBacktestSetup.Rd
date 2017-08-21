@@ -28,4 +28,3 @@ getBacktestSetup(myStrat.MA)
 
 ##End(Not run)
 }
-

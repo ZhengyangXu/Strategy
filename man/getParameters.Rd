@@ -30,4 +30,3 @@ getParameters(myStrat.MA)
 
 ##End(Not run)
 }
-

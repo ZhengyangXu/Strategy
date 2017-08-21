@@ -20,7 +20,7 @@
 #' # MA(200)-Strategy
 #' params <- list(k=20)
 #' # reduce dataset due to computation time
-#' assets_r <- assets[tail(index(assets),100)]
+#' assets_r <- assets[tail(zoo::index(assets),100)]
 #' myStrat.MA <- Strategy(assets=assets_r, strat="MA", strat.params=params)
 #'
 #' # Perform backtest on MA(20)-Strategy with

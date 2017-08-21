@@ -31,4 +31,3 @@ getStratName(myStrat.MA, include.params=TRUE) # returns "MA(200)"
 
 ##End(Not run)
 }
-

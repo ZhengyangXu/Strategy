@@ -1,18 +1,6 @@
-# ###################################
-# PROJECT THESIS
-# ZHAW Winterthur
-# by Julian Busch
-# December 18, 2015
-# ###################################
-
-
 #' @import xts
 #' @import zoo
 #' @import methods
-#' @importFrom grDevices rainbow
-#' @importFrom graphics plot abline arrows axis barplot layout legend lines par rect text
-#' @importFrom stats end lag na.omit qnorm dnorm quantile sd start time
-#' @importFrom utils head
 
 
 setOldClass("xts") # formally declare S3 class

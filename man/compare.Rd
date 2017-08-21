@@ -50,4 +50,3 @@ myStrat.EWMA <- Strategy(assets=assets, strat="EWMA", strat.params=params)
 
 ##End(Not run)
 }
-

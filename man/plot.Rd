@@ -2,8 +2,8 @@
 % Please edit documentation in R/0_methods-PLOT.R
 \name{plot}
 \alias{plot}
-\alias{plot,Strategy,missing-method}
 \alias{plot.Strategy}
+\alias{plot,Strategy,missing-method}
 \title{Plot of a \code{Strategy}-object}
 \usage{
 \method{plot}{Strategy}(x, y, from=NULL, until=NULL
@@ -53,4 +53,3 @@ plot(myStrat.MA, from="2015-01-01", until="2015-12-31", which.assets=1)
 
 ##End(Not run)
 }
-

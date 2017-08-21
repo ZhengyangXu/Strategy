@@ -41,4 +41,3 @@ getSignals(myStrat.MA)
 
 ##End(Not run)
 }
-

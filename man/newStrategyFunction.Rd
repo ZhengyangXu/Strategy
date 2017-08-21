@@ -24,4 +24,3 @@ newStrategyFunction(name="myNewStrat", file.path=getwd(), overwrite=T)
 
 ##End(Not run)
 }
-

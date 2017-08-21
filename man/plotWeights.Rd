@@ -34,4 +34,3 @@ plotWeights(myStrat.MA)
 
 ##End(Not run)
 }
-

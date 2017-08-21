@@ -30,4 +30,3 @@ getFilters(myStrat.MA) # all strategy values returned
 
 ##End(Not run)
 }
-

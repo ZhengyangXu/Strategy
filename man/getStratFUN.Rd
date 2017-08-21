@@ -28,4 +28,3 @@ MA.FUN <- getStratFUN(myStrat.MA)
 
 ##End(Not run)
 }
-

@@ -32,4 +32,3 @@ MA.costs$relative
 
 ##End(Not run)
 }
-

@@ -35,4 +35,3 @@ getPrices(myStrat.MA, from="2015-01-01", until="2015-12-31")
 
 ##End(Not run)
 }
-

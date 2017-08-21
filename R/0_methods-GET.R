@@ -193,7 +193,7 @@ setMethod(f = "getTrades",
 #'
 #' # MA(200)-Strategy
 #' params <- list(k=200)
-#' randreturns <- xts(rnorm(nrow(assets)), order.by=
+#' randreturns <- xts::xts(rnorm(nrow(assets)), order.by=
 #' seq(from=Sys.Date()-nrow(assets)+1, to=Sys.Date(), by="d"))
 #' indicators <- list(returns=randreturns) # example: random returns
 #' myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params, indicators=indicators)
