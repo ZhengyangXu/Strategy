@@ -50,4 +50,3 @@ myStrat.MA <- Strategy(assets=assets, strat="MA", strat.params=params)
 
 ##End (Not run)
 }
-

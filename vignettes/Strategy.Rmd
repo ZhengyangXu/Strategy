@@ -11,6 +11,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+library(xts)
+```
+
 ## Introduction
 
 This package allows users to apply customizable quantitative trading strategies to historical portfolio data. An S4 class called "Strategy" is implemented that creates objects from which vaious performance measurements may be extracted, visualized and compared. A template for custom quantitative strategies is available and so the package can be extended in an easy way and still all methods are available for consistent evaluations. 
@@ -26,7 +30,7 @@ There is no data available within this package.
 ## Examples
 
 ```{r}
-require(Strategy)
+library(Strategy)
 
 # Generate positive random walks for random assets
 set.seed(2)
