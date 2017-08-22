@@ -10,9 +10,9 @@ An S4 class to store quantitative strategies and compute various performance fig
 \section{Slots}{
 
 \describe{
-\item{\code{prices}}{Price data of the assets. If return data was given within the constructor, starti}
+\item{\code{prices}}{Price data of the assets. If return data was given within the constructor, starting at 100.}
 
-\item{\code{weights}}{Time series of class \code{xts} indicating rowwise weights of the assets.}
+\item{\code{weights}}{Time series of class \code{xts} indicating row wise weights of the assets.}
 
 \item{\code{indicators}}{List of indicators of class \code{xts}.}
 

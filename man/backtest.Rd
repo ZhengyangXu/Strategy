@@ -31,7 +31,7 @@ backtest(object, horizon = "6m", data.width = "24m", keep.history = F,
 
 \item{optim.param.max}{A numeric vector providing the maximum values of the parameters that are calibrated.}
 
-\item{optim.param.scale}{A numeric vector providing the scaling of the parameters that are calibrated. It is adviseable to set scaling of the parameters to the smallest unit that makes sense.}
+\item{optim.param.scale}{A numeric vector providing the scaling of the parameters that are calibrated. It is advisable to set scaling of the parameters to the smallest unit that makes sense.}
 
 \item{from}{The date in character format \code{"yyyy-MM-dd"} or as date-object from which assets shall be considered. If \code{NULL}, no restriction is made.}
 

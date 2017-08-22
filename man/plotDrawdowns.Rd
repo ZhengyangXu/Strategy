@@ -30,7 +30,7 @@ plotDrawdowns(object, from = NULL, until = NULL, which = NULL,
 
 \item{include.costs}{If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.}
 
-\item{use.backtest}{If \code{TRUE}, the signals from the backtesting output are considered for drawdowns calculation. If \code{FALSE}, the signals from the normal strategy execution with the intial parameters are used.}
+\item{use.backtest}{If \code{TRUE}, the signals from the backtesting output are considered for drawdowns calculation. If \code{FALSE}, the signals from the normal strategy execution with the initial parameters are used.}
 
 \item{returnValues}{If \code{TRUE}, the drawdown values are returned.}
 

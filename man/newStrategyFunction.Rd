@@ -14,7 +14,7 @@ newStrategyFunction(name = NULL, file.path = getwd(), overwrite = FALSE)
 \item{overwrite}{If the strategy file already exists, it will be overwritten if value is \code{TRUE}.}
 }
 \description{
-Creates a strategy functin template file. This file can be used as template for the development of customized strategies.
+Creates a strategy function template file. This file can be used as template for the development of customized strategies.
 }
 \examples{
 ##Not run:

@@ -21,7 +21,7 @@ ES(object, alpha=0.05, V=1
 \arguments{
 \item{object}{An object of class \code{Strategy}.}
 
-\item{alpha}{The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.}
+\item{alpha}{The significance level \eqn{\alpha} that is used for probability of cumulative loss at level \eqn{1-\alpha}.}
 
 \item{V}{Volume that is invested. The linear factor for the ES calculation. Either a single value for portfolio or a vector for each asset.}
 
