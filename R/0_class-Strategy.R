@@ -17,8 +17,8 @@ setClassUnion("funNULL", members = c("function","NULL")) # function or NULL for 
 # CLASS DEFINITION ------------------------------------------------
 #' @title \code{Strategy}-Class
 #' @description An S4 class to store quantitative strategies and compute various performance figures.
-#' @slot prices Price data of the assets. If return data was given within the constructor, starti
-#' @slot weights Time series of class \code{xts} indicating rowwise weights of the assets.
+#' @slot prices Price data of the assets. If return data was given within the constructor, starting at 100.
+#' @slot weights Time series of class \code{xts} indicating row wise weights of the assets.
 #' @slot indicators List of indicators of class \code{xts}.
 #' @slot strat Name of the strategy function to be called. Could be a full file path to a custom strategy.
 #' @slot strat.params List of parameters as input for the strategy function. List entry names should match parameter names.

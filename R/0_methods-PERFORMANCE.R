@@ -406,7 +406,7 @@ setMethod(f = "VaR",
 #'        , scaling.periods=NULL, include.weights=TRUE
 #'        , include.costs=TRUE, use.backtest=FALSE)
 #' @param object An object of class \code{Strategy}.
-#' @param alpha The significance level \eqn{\alpha} that is used for propability of cumulative loss at level \eqn{1-\alpha}.
+#' @param alpha The significance level \eqn{\alpha} that is used for probability of cumulative loss at level \eqn{1-\alpha}.
 #' @param V Volume that is invested. The linear factor for the ES calculation. Either a single value for portfolio or a vector for each asset.
 #' @param type Type of ES calculation. Use \code{normal.distribution} for the normal distribution, \code{historical} for the empirical distribution.
 #' @param method Method of loss calculation. Use \code{linear} for approximation with log returns or \code{full} for calculation with arithmetic returns.

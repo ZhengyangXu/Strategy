@@ -5,7 +5,7 @@
 #' @export
 #' @aliases newStrategyFunction
 #' @title Create Own Strategy
-#' @description Creates a strategy functin template file. This file can be used as template for the development of customized strategies.
+#' @description Creates a strategy function template file. This file can be used as template for the development of customized strategies.
 #' @param name String as name of the new function (without spaces).
 #' @param file.path Valid file path of existing directory where the new function shall be stored in format file.path/name.R.
 #' @param overwrite If the strategy file already exists, it will be overwritten if value is \code{TRUE}.

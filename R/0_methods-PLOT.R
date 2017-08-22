@@ -323,7 +323,7 @@ setMethod(f = "plotPerformance",
 #' @param type If the \code{absolute} or \code{relative} drawdown of the performance shall be returned.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which drawdowns shall be plotted. If \code{NULL}, the start date of the performances is used.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which drawdowns shall be plotted. If \code{NULL}, the end date of the performances is used.
-#' @param use.backtest If \code{TRUE}, the signals from the backtesting output are considered for drawdowns calculation. If \code{FALSE}, the signals from the normal strategy execution with the intial parameters are used.
+#' @param use.backtest If \code{TRUE}, the signals from the backtesting output are considered for drawdowns calculation. If \code{FALSE}, the signals from the normal strategy execution with the initial parameters are used.
 #' @param include.costs If \code{FALSE}, the fixed and relative trading costs are NOT considered for performance calculation. Default value is \code{TRUE}. As default values for costs are \code{0}, this argument is redundant if no costs are given.
 #' @param returnValues If \code{TRUE}, the drawdown values are returned.
 #' @param ... Further arguments that can be passed to the underlying plot()-function.

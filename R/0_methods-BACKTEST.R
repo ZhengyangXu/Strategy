@@ -9,7 +9,7 @@
 #' @param optim.param A character vector providing the names of the parameters to be calibrated. Parameters that are not provided will be kept fix.
 #' @param optim.param.min A numeric vector providing the minimum values of the parameters that are calibrated.
 #' @param optim.param.max A numeric vector providing the maximum values of the parameters that are calibrated.
-#' @param optim.param.scale A numeric vector providing the scaling of the parameters that are calibrated. It is adviseable to set scaling of the parameters to the smallest unit that makes sense.
+#' @param optim.param.scale A numeric vector providing the scaling of the parameters that are calibrated. It is advisable to set scaling of the parameters to the smallest unit that makes sense.
 #' @param from The date in character format \code{"yyyy-MM-dd"} or as date-object from which assets shall be considered. If \code{NULL}, no restriction is made.
 #' @param until The date in character format \code{"yyyy-MM-dd"} or as date-object until which assets shall be considered. If \code{NULL}, no restriction is made.
 #' @param which Names or number of assets that should be included in backtest
