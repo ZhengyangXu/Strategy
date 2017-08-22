@@ -276,7 +276,7 @@ setMethod(f = "getStratFUN",
 #' @name getStratName
 #' @aliases getStratName
 #' @title Get strategy function name from \code{Strategy}-object
-#' @description Gets the strategy function name of an object of class \code{Strategy} that was used for strategy calculation. This function is for aesthetical purposes only and does not have any numerical relevance.
+#' @description Gets the strategy function name of an object of class \code{Strategy} that was used for strategy calculation. This function is for aesthetic purposes only and does not have any numerical relevance.
 #' @param object An object of class \code{Strategy}.
 #' @param include.params If set to \code{TRUE}, the parameters used for strategy evaluation are included.
 #' @examples
