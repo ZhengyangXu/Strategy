@@ -1,6 +1,14 @@
-#' @import xts
-#' @import zoo
+## from 2015, all packages except "base" have to be listed
+## http://developer.r-project.org/blosxom.cgi/R-devel/NEWS/2015/06/29#n2015-06-29
+
+
+#' @import stats
+#' @importFrom utils head
+#' @import graphics
 #' @import methods
+#' @importFrom grDevices rainbow
+#' @import zoo
+#' @import xts
 
 
 setOldClass("xts") # formally declare S3 class
